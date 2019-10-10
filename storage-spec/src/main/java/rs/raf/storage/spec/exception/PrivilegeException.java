@@ -4,7 +4,7 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.core.File;
 
-public abstract class PrivilegeException extends StorageException {
+public final class PrivilegeException extends StorageException {
 
     public PrivilegeException(User user, File file) {
         super(Res.ERROR_PRIVILEGE

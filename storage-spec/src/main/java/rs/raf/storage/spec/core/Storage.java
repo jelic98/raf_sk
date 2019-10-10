@@ -5,7 +5,7 @@ import rs.raf.storage.spec.auth.User;
 public abstract class Storage {
 
     private Directory root;
-    private User owner;
+    private User owner, activeUser;
 
     public abstract void connect();
     public abstract void disconnect();
@@ -24,5 +24,9 @@ public abstract class Storage {
 
     public final User getOwner() {
         return owner;
+    }
+
+    public final User getActiveUser() {
+        return activeUser;
     }
 }

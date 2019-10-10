@@ -11,6 +11,7 @@ public class Res {
     public static final String WILDCARD_USER = "${user}";
     public static final String WILDCARD_FILE = "${file}";
     public static final String WILDCARD_TYPE = "${type}";
+    public static final String WILDCARD_DRIVER = "${driver}";
 
     public static final String ERROR_NON_EXISTENCE = String.format(
             "%s %s does not exist",
@@ -20,4 +21,7 @@ public class Res {
             "User %s is not authorized to perform the specified operation on the file %s",
             WILDCARD_USER,
             WILDCARD_FILE);
+    public static final String ERROR_DRIVER_REGISTERED = String.format(
+            "Driver %s is already registered",
+            WILDCARD_DRIVER);
 }
