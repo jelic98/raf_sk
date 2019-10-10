@@ -10,7 +10,7 @@ public abstract class Storage {
     public abstract void connect();
     public abstract void disconnect();
 
-    public final void initialize() {
+    public final void initialize(StorageParameters parameters) {
 
     }
 

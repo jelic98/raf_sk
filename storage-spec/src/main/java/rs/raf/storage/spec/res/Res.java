@@ -4,10 +4,6 @@ public class Res {
 
     public static final String FILE_CONFIG = "/.config";
 
-    public static final String FORMAT_DATE = "dd. MMM YYYY";
-    public static final String FORMAT_TIME = "HH:mm:ss";
-    public static final String FORMAT_DATETIME = "dd. MMM YYYY, HH:mm:ss";
-
     public static final String WILDCARD_USER = "${user}";
     public static final String WILDCARD_FILE = "${file}";
     public static final String WILDCARD_TYPE = "${type}";
@@ -20,6 +16,9 @@ public class Res {
     public static final String ERROR_PRIVILEGE = String.format(
             "User %s is not authorized to perform the specified operation on the file %s",
             WILDCARD_USER,
+            WILDCARD_FILE);
+    public static final String ERROR_FORBIDDEN_TYPE = String.format(
+            "Type of file %s is forbidden in specified storage",
             WILDCARD_FILE);
     public static final String ERROR_DRIVER_REGISTERED = String.format(
             "Driver %s is already registered",

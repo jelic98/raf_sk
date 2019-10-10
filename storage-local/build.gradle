@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group 'rs.raf.storage.spec'
+group 'rs.raf.storage.local'
 version '0.0.1'
 
 sourceCompatibility = 1.8
@@ -19,5 +19,6 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.json', name: 'json', version: '20190722'
+    // TODO Use JitPack for library distribution
+    compile fileTree(dir: 'lib', include: '*.jar')
 }

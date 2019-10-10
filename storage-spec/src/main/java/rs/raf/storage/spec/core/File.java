@@ -15,7 +15,7 @@ public abstract class File {
 
     public abstract void download(String path);
 
-    // TODO Return member path or build it recursively to the root
+    // TODO Return member path or build it recursively to the root?
     public final String getPath() {
         return null;
     }
