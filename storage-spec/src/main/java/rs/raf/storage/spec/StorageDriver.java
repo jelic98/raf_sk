@@ -1,20 +1,11 @@
 package rs.raf.storage.spec;
 
-import rs.raf.storage.spec.exception.DriverRegisteredException;
+import rs.raf.storage.spec.archive.Archiver;
+import rs.raf.storage.spec.core.Directory;
+import rs.raf.storage.spec.core.Storage;
+import java.io.File;
 
 public abstract class StorageDriver {
-
-    // Driver is set by calling
-    // Class.forName("rs.raf.storage.impl.StorageDriverImpl");
-    // which then executes following implementation static block
-    // static {
-    // try {
-    // register(new StorageDriverImpl("Implementation"));
-    // }catch(DriverRegisteredException e) {
-    // throw new IllegalStateException(e.getMessage());
-    // }
-    // }
-    private static StorageDriver driver;
 
     private String name;
 
@@ -22,15 +13,15 @@ public abstract class StorageDriver {
         this.name = name;
     }
 
-    public static void register(StorageDriver implementation) throws DriverRegisteredException {
-        if(driver != null) {
-            throw new DriverRegisteredException(driver);
-        }
+    public abstract Storage getStorage();
 
-        driver = implementation;
-    }
+    public abstract Directory getDirectory();
 
-    public static String getName() {
-        return driver.name;
+    public abstract File getFile();
+
+    public abstract Archiver getArchiver();
+
+    public final String getName() {
+        return name;
     }
 }
