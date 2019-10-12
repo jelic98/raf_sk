@@ -16,9 +16,12 @@ jar {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     // TODO Use JitPack for library distribution
     compile fileTree(dir: 'lib', include: '*.jar')
+
+    implementation 'com.github.jelic98:konzole:v1.0.1'
 }
