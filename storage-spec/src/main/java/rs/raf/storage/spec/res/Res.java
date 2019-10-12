@@ -3,7 +3,7 @@ package rs.raf.storage.spec.res;
 public class Res {
 
     public static class Registry {
-        public static final String PATH = "/.registry";
+        public static final String PATH = "~/.registry";
     }
 
     public static class Wildcard {
@@ -15,13 +15,16 @@ public class Res {
     }
 
     public static class Error {
-        public static final String NON_EXISTENCE = String.format(
-                "%s %s does not exist",
-                Wildcard.TYPE,
-                Wildcard.FILE);
         public static final String PRIVILEGE = String.format(
                 "User %s is not authorized to perform the specified operation on the file %s",
                 Wildcard.USER,
+                Wildcard.FILE);
+        public static final String AUTHENTICATION = String.format(
+                "Wrong password for user %s",
+                Wildcard.USER);
+        public static final String NON_EXISTENCE = String.format(
+                "%s %s does not exist",
+                Wildcard.TYPE,
                 Wildcard.FILE);
         public static final String FORBIDDEN_TYPE = String.format(
                 "Type of file %s is forbidden in specified storage",

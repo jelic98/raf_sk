@@ -1,7 +1,6 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.search.Criteria;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +12,15 @@ public abstract class Directory extends File {
         super(name);
 
         children = new LinkedList<>();
+    }
+
+    @Override
+    void extract(List<File> files) {
+        super.extract(files);
+
+        for(File child : getChildren()) {
+            child.extract(files);
+        }
     }
 
     @Override

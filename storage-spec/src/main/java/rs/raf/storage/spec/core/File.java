@@ -1,6 +1,7 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.res.Res;
+import java.util.List;
 
 public abstract class File {
 
@@ -27,6 +28,10 @@ public abstract class File {
     public abstract void upload(Directory destination);
 
     public abstract void download(String path);
+
+    void extract(List<File> files) {
+        files.add(this);
+    }
 
     public final String getPath() {
         return getPath(true);
@@ -67,5 +72,20 @@ public abstract class File {
 
     public final Metadata getMetadata() {
         return metadata;
+    }
+
+    final void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof File)) {
+            return false;
+        }
+
+        File file = (File) obj;
+
+        return file.getPath().equals(getPath());
     }
 }

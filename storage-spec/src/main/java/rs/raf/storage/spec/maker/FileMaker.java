@@ -1,7 +1,8 @@
-package rs.raf.storage.spec.core;
+package rs.raf.storage.spec.maker;
 
 import rs.raf.storage.spec.StorageDriver;
 import rs.raf.storage.spec.StorageDriverManager;
+import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import java.util.LinkedList;
 import java.util.List;

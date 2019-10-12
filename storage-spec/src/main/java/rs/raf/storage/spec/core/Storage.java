@@ -1,36 +1,43 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.auth.User;
-
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Storage {
 
     private Directory root;
-    private User owner, activeUser;
+    private List<User> users;
+    private List<String> forbiddenTypes;
 
     public abstract void connect();
     public abstract void disconnect();
 
-    public final void initialize(Parameters parameters) {
-
-    }
-
-    public final User createUser(String name, String password) {
-        return new User(name, password);
+    public Storage() {
+        users = new LinkedList<>();
+        forbiddenTypes = new LinkedList<>();
     }
 
     public final Directory getRoot() {
         return root;
     }
 
-    public final User getOwner() {
-        return owner;
+    public final void addUser(User user) {
+        users.add(user);
     }
 
-    public final User getActiveUser() {
-        return activeUser;
+    public final void removeUser(User user) {
+        users.remove(user);
+    }
+
+    public final void forbidType(String type) {
+        forbiddenTypes.add(type);
+    }
+
+    public final void allowType(String type) {
+        forbiddenTypes.remove(type);
     }
 
     public static final class Parameters {
