@@ -23,14 +23,17 @@ public abstract class File {
 
     public abstract void copy(Directory destination);
 
-    public abstract void move(Directory destination);
-
     public abstract void upload(Directory destination);
 
     public abstract void download(String path);
 
     void extract(List<File> files) {
         files.add(this);
+    }
+
+    public void move(Directory destination) {
+        this.copy(destination);
+        this.delete();
     }
 
     public final String getPath() {
@@ -53,7 +56,7 @@ public abstract class File {
             return path.toString();
         }
     }
-
+    
     public final String getName() {
         return name;
     }
