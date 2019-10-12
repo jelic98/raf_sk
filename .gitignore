@@ -7,3 +7,5 @@
 */.gradle/
 local.properties
 .gradletasknamecache
+credentials.json
+StoredCredential
