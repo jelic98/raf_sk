@@ -32,7 +32,7 @@ public class Question {
     }
 
     List<Option> getOptions() {
-        return new LinkedList<>(this.options);
+        return new LinkedList<>(options);
     }
 
     public Question addOption(Option option) {

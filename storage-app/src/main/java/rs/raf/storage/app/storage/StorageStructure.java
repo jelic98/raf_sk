@@ -1,9 +1,6 @@
 package rs.raf.storage.app.storage;
 
-import rs.raf.storage.app.model.ExecuteOption;
-import rs.raf.storage.app.model.Option;
-import rs.raf.storage.app.model.Question;
-import rs.raf.storage.app.model.Structure;
+import rs.raf.storage.app.model.*;
 
 public final class StorageStructure extends Structure {
 
@@ -14,9 +11,15 @@ public final class StorageStructure extends Structure {
                     .addOption(new ExecuteOption("Local storage") {
                         @Override
                         public void execute() {
-                            System.out.println("Uploading file...");
+                            Input source = getInput("source");
+                            Input destination = getInput("destination");
+
+                            System.out.println(String.format("Uploading file from %s to %s", source.getValue(), destination.getValue()));
                         }
-                    })))
+                    }
+                    .addInput(new Input("Source"))
+                    .addInput(new Input("Destination")))
+                ))
                 .addOption(new ExecuteOption("Download file") {
                     @Override
                     public void execute() {

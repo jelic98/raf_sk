@@ -6,18 +6,19 @@ import java.util.Scanner;
 public class Lifecycle {
 
     private static final String OPTION_SEPARATOR = " - ";
-    private static final String SELECTION = "Selection: ";
+    private static final String INPUT_SEPARATOR = ": ";
+    private static final String SELECTION = "Selection";
     private static final String BACK_OPTION = "Back";
     private static final String EXIT_OPTION = "Exit";
     private static final String WRONG_OPTION = "Wrong option";
 
     private Structure structure;
-    private Scanner input;
+    private Scanner scanner;
 
     public Lifecycle(Structure structure) {
         this.structure = structure;
 
-        input = new Scanner(System.in);
+        scanner = new Scanner(System.in);
     }
 
     public void run() {
@@ -49,16 +50,25 @@ public class Lifecycle {
             System.out.println(++index + OPTION_SEPARATOR + option.getTitle());
         }
 
-        System.out.print(SELECTION);
+        System.out.print(SELECTION + INPUT_SEPARATOR);
 
         Option selection;
 
         try {
-            selection = options.get(input.nextInt() - 1);
+            selection = options.get(scanner.nextInt() - 1);
         }catch(IndexOutOfBoundsException e) {
             System.out.println(WRONG_OPTION);
             ask(question);
             return;
+        }
+
+        if(selection.hasInputs()) {
+            scanner.nextLine();
+
+            for(Input input : selection.getInputs()) {
+                System.out.print(input.getTitle() + INPUT_SEPARATOR);
+                input.setValue(scanner.nextLine());
+            }
         }
 
         selection.onSelected();
