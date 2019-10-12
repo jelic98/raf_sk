@@ -6,6 +6,7 @@ import java.util.List;
 public class Question {
 
     private String title;
+    private Question parent;
     private List<Option> options;
 
     public Question(String title) {
@@ -14,7 +15,33 @@ public class Question {
         options = new LinkedList<>();
     }
 
-    public void addOption(Option option) {
+    String getTitle() {
+        return title;
+    }
+
+    boolean hasParent() {
+        return parent != null;
+    }
+
+    Question getParent() {
+        return parent;
+    }
+
+    void setParent(Question parent) {
+        this.parent = parent;
+    }
+
+    List<Option> getOptions() {
+        return new LinkedList<>(this.options);
+    }
+
+    public Question addOption(Option option) {
         options.add(option);
+
+        if(option.hasQuestion()) {
+            option.getQuestion().setParent(this);
+        }
+
+        return this;
     }
 }

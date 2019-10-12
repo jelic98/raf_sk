@@ -1,14 +1,16 @@
 package rs.raf.storage.app.model;
 
-public class Structure {
+public abstract class Structure {
 
     private Question question;
 
     public Structure() {
-        // TODO Construct app questioning structure
+        question = create();
     }
 
-    public Question getQuestion() {
+    protected abstract Question create();
+
+    Question getQuestion() {
         return question;
     }
 }

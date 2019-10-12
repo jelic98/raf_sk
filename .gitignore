@@ -3,6 +3,7 @@
 *.jar
 *.iml
 .idea/
+out/
 */build/
 */.gradle/
 local.properties
