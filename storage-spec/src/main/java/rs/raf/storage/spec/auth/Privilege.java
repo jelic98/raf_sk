@@ -2,7 +2,7 @@ package rs.raf.storage.spec.auth;
 
 import rs.raf.storage.spec.core.File;
 
-public final class Privilege {
+final class Privilege {
 
     private File file;
     private boolean read, write, delete;
@@ -12,6 +12,10 @@ public final class Privilege {
         this.read = read;
         this.write = write;
         this.delete = delete;
+    }
+
+    public File getFile() {
+        return file;
     }
 
     public boolean canRead() {

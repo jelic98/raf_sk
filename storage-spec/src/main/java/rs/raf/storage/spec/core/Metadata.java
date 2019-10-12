@@ -15,7 +15,15 @@ public final class Metadata {
         return metadata.get(key);
     }
 
-    public void set(String key, String value) {
+    public void add(String key, String value) {
         metadata.put(key, value);
+    }
+
+    public void remove(String key) {
+        metadata.remove(key);
+    }
+
+    public void clear() {
+        metadata.clear();
     }
 }

@@ -15,9 +15,9 @@ public abstract class StorageDriver {
 
     public abstract Storage getStorage();
 
-    public abstract Directory getDirectory();
+    public abstract Directory getDirectory(String name);
 
-    public abstract File getFile();
+    public abstract File getFile(String name);
 
     public abstract Archiver getArchiver();
 

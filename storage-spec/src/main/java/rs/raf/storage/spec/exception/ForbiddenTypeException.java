@@ -6,7 +6,7 @@ import rs.raf.storage.spec.res.Res;
 public final class ForbiddenTypeException extends StorageException {
 
     public ForbiddenTypeException(File file) {
-        super(Res.ERROR_FORBIDDEN_TYPE
-                .replace(Res.WILDCARD_FILE, file.getPath()));
+        super(Res.Error.FORBIDDEN_TYPE
+                .replace(Res.Wildcard.FILE, file.getPath()));
     }
 }

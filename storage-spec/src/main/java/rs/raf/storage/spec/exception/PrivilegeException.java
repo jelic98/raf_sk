@@ -7,8 +7,8 @@ import rs.raf.storage.spec.core.File;
 public final class PrivilegeException extends StorageException {
 
     public PrivilegeException(User user, File file) {
-        super(Res.ERROR_PRIVILEGE
-                .replace(Res.WILDCARD_USER, user.getName())
-                .replace(Res.WILDCARD_FILE, file.getPath()));
+        super(Res.Error.PRIVILEGE
+                .replace(Res.Wildcard.USER, user.getName())
+                .replace(Res.Wildcard.FILE, file.getPath()));
     }
 }

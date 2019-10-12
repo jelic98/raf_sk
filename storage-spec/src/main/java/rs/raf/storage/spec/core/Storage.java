@@ -1,6 +1,7 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.auth.User;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ public abstract class Storage {
     public abstract void disconnect();
 
     public final void initialize(Parameters parameters) {
-        
+
     }
 
     public final User createUser(String name, String password) {
