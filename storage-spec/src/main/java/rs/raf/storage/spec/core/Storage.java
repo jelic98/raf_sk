@@ -1,7 +1,12 @@
 package rs.raf.storage.spec.core;
 
+import rs.raf.storage.spec.StorageDriverManager;
+import rs.raf.storage.spec.auth.Authorizer;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.exception.AuthenticationException;
+import rs.raf.storage.spec.exception.DriverNotRegisteredException;
+import rs.raf.storage.spec.exception.PrivilegeException;
+import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.registry.Registry;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,21 +15,41 @@ import java.util.Map;
 
 public abstract class Storage {
 
-    private static volatile User activeUser;
+    private static volatile Storage instance;
 
     private Registry registry;
     private Directory root;
-    private User owner;
+    private User owner, activeUser;
     private List<User> users;
     private List<String> forbiddenTypes;
+    private Authorizer authorizer;
 
-    public Storage() {
+    private Storage() {
+        reset();
+    }
+
+    private void reset() {
         registry = new Registry();
         users = new LinkedList<>();
         forbiddenTypes = new LinkedList<>();
+        authorizer = new Authorizer();
     }
 
-    public void connect(User user) throws AuthenticationException {
+    public static Storage instance() throws DriverNotRegisteredException {
+        if(instance == null) {
+            Storage.synchronize();
+        }
+
+        return instance;
+    }
+
+    private static synchronized void synchronize() throws DriverNotRegisteredException {
+        if(instance == null) {
+            instance = StorageDriverManager.getDriver().getStorage();
+        }
+    }
+
+    public void connect(User user) throws StorageException {
         registry.load(user, this);
 
         activeUser = user;
@@ -32,7 +57,7 @@ public abstract class Storage {
         onConnect();
     }
 
-    public void disconnect(User user) throws AuthenticationException {
+    public void disconnect(User user) throws StorageException {
         registry.save(user, this);
 
         activeUser = null;
@@ -42,10 +67,6 @@ public abstract class Storage {
 
     protected abstract void onConnect();
     protected abstract void onDisconnect();
-
-    public synchronized static User getActiveUser() {
-        return activeUser;
-    }
 
     public final Directory getRoot() {
         return root;
@@ -59,15 +80,24 @@ public abstract class Storage {
         return owner;
     }
 
+    // TODO Make this method invisible to the implementation
     public void setOwner(User owner) {
         this.owner = owner;
     }
 
-    public final void addUser(User user) {
+    public User getActiveUser() {
+        return activeUser;
+    }
+
+    public final void addUser(User user) throws PrivilegeException {
+        authorizer.checkManage(activeUser, this);
+
         users.add(user);
     }
 
-    public final void removeUser(User user) {
+    public final void removeUser(User user) throws PrivilegeException {
+        authorizer.checkManage(activeUser, this);
+
         users.remove(user);
     }
 

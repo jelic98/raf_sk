@@ -7,6 +7,7 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
+import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -56,7 +57,7 @@ final class RegistrySaver {
         this.hasher = hasher;
     }
 
-    void save(Storage storage) {
+    void save(Storage storage) throws RegistryException {
         saveFiles(storage);
 
         saveUsers(storage);
@@ -68,7 +69,7 @@ final class RegistrySaver {
         // TODO [CONSIDER] Save file tree with call to storage.getRoot()
     }
 
-    private void saveUsers(Storage storage) {
+    private void saveUsers(Storage storage) throws RegistryException {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
@@ -110,11 +111,11 @@ final class RegistrySaver {
 
             Files.write(Paths.get(Res.Registry.PATH), registryJson.toString().getBytes());
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
     }
 
-    private void saveMetadata(Storage storage) {
+    private void saveMetadata(Storage storage) throws RegistryException {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
@@ -141,11 +142,11 @@ final class RegistrySaver {
 
             Files.write(Paths.get(Res.Registry.PATH), registryJson.toString().getBytes());
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
     }
 
-    private void saveForbiddenTypes(Storage storage) {
+    private void saveForbiddenTypes(Storage storage) throws RegistryException {
         try {
             JSONArray typesArray = new JSONArray();
             typesArray.put(storage.getForbiddenTypes());
@@ -156,7 +157,7 @@ final class RegistrySaver {
 
             Files.write(Paths.get(Res.Registry.PATH), registryJson.toString().getBytes());
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
     }
 }

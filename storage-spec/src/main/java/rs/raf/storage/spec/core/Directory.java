@@ -1,6 +1,7 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.exception.PrivilegeException;
+import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.search.Criteria;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,7 @@ public abstract class Directory extends File {
     }
 
     @Override
-    public void download(String path) throws PrivilegeException {
+    public void download(String path) throws StorageException {
         super.download(path);
 
         for(File child : getChildren()) {
@@ -33,7 +34,7 @@ public abstract class Directory extends File {
         }
     }
 
-    public final void upload(List<File> files) throws PrivilegeException {
+    public final void upload(List<File> files) throws StorageException {
         children.addAll(files);
 
         for(File file : files) {

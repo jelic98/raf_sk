@@ -43,6 +43,7 @@ public final class Res {
         public static final String FORBIDDEN_TYPE = String.format(
                 "Type of file %s is forbidden in specified storage",
                 Wildcard.FILE);
+        public static final String REGISTRY = "Registry cannot be accessed";
         public static final String DRIVER_NOT_REGISTERED = "Driver is not registered";
         public static final String DRIVER_ALREADY_REGISTERED = String.format(
                 "Driver %s is already registered",

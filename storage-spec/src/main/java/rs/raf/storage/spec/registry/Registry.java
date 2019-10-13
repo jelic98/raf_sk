@@ -4,6 +4,8 @@ import org.json.JSONObject;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.AuthenticationException;
+import rs.raf.storage.spec.exception.RegistryException;
+import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
 
 public final class Registry {
@@ -23,7 +25,7 @@ public final class Registry {
         saver = new RegistrySaver(parser, extractor, hasher);
     }
 
-    public void load(User user, Storage storage) throws AuthenticationException {
+    public void load(User user, Storage storage) throws StorageException {
         if(!authenticationPassed(user)) {
             throw new AuthenticationException(user);
         }
@@ -33,7 +35,7 @@ public final class Registry {
         loader.load(storage);
     }
 
-    public void save(User user, Storage storage) throws AuthenticationException {
+    public void save(User user, Storage storage) throws StorageException {
         if(!authenticationPassed(user)) {
             throw new AuthenticationException(user);
         }
@@ -43,17 +45,15 @@ public final class Registry {
         saver.save(storage);
     }
 
-    private boolean authenticationPassed(User user) {
+    private boolean authenticationPassed(User user) throws RegistryException {
         try {
             JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
             JSONObject userJson = registryJson.getJSONObject(Res.Registry.KEY_USERS).getJSONObject(hasher.hashUsername(user));
 
             return userJson.get(Res.Registry.KEY_PASSWORD).equals(hasher.hashPassword(user));
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
-
-        return false;
     }
 
     private void initializeRegistryFile() {

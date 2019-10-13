@@ -6,8 +6,6 @@ import java.util.List;
 
 public final class User {
 
-    // TODO Add interface for managing users
-
     private String name, password;
     private List<Privilege> privileges;
     private boolean saved;

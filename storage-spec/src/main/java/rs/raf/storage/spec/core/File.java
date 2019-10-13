@@ -1,8 +1,9 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.auth.Authorizer;
-import rs.raf.storage.spec.exception.AuthenticationException;
+import rs.raf.storage.spec.exception.ForbiddenTypeException;
 import rs.raf.storage.spec.exception.PrivilegeException;
+import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public abstract class File {
     private static final PathResolver resolver;
     private static final Authorizer authorizer;
 
-    private String name;
+    private String name, type;
     private Directory parent;
     private Metadata metadata;
 
@@ -24,26 +25,30 @@ public abstract class File {
         this.name = name;
     }
 
-    public void delete() throws PrivilegeException {
-        authorizer.checkDelete(Storage.getActiveUser(), this);
+    public void delete() throws StorageException {
+        authorizer.checkDelete(Storage.instance().getActiveUser(), this);
 
         onDelete();
     }
 
-    public void copy(Directory destination) throws PrivilegeException {
-        authorizer.checkWrite(Storage.getActiveUser(), this);
+    public void copy(Directory destination) throws StorageException {
+        authorizer.checkWrite(Storage.instance().getActiveUser(), this);
 
         onCopy(destination);
     }
 
-    public void upload(Directory destination) throws PrivilegeException {
-        authorizer.checkWrite(Storage.getActiveUser(), this);
+    public void upload(Directory destination) throws StorageException {
+        if(Storage.instance().getForbiddenTypes().contains(getType())) {
+            throw new ForbiddenTypeException(this);
+        }
+
+        authorizer.checkWrite(Storage.instance().getActiveUser(), this);
 
         onUpload(destination);
     }
 
-    public void download(String path) throws PrivilegeException {
-        authorizer.checkRead(Storage.getActiveUser(), this);
+    public void download(String path) throws StorageException {
+        authorizer.checkRead(Storage.instance().getActiveUser(), this);
 
         onDownload(path);
     }
@@ -52,12 +57,13 @@ public abstract class File {
     protected abstract void onCopy(Directory destination);
     protected abstract void onUpload(Directory destination);
     protected abstract void onDownload(String path);
+    protected abstract String getType();
 
     public void extract(List<File> files) {
         files.add(this);
     }
 
-    public void move(Directory destination) throws PrivilegeException {
+    public void move(Directory destination) throws StorageException {
         this.copy(destination);
         this.delete();
     }

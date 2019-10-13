@@ -7,6 +7,7 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
+import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,7 +24,7 @@ final class RegistryLoader {
         this.hasher = hasher;
     }
 
-    void load(Storage storage) {
+    void load(Storage storage) throws RegistryException {
         loadFiles(storage);
 
         loadUsers(storage);
@@ -35,7 +36,7 @@ final class RegistryLoader {
         // TODO [CONSIDER] Load file tree with call to storage.setRoot()
     }
 
-    private void loadUsers(Storage storage) {
+    private void loadUsers(Storage storage) throws RegistryException {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
@@ -73,11 +74,11 @@ final class RegistryLoader {
                 storage.addUser(user);
             }
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
     }
 
-    private void loadMetadata(Storage storage) {
+    private void loadMetadata(Storage storage) throws RegistryException {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
@@ -104,11 +105,11 @@ final class RegistryLoader {
                 file.setMetadata(metadata);
             }
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
     }
 
-    private void loadForbiddenTypes(Storage storage) {
+    private void loadForbiddenTypes(Storage storage) throws RegistryException {
         try {
             JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
             JSONArray typesJson = registryJson.getJSONArray(Res.Registry.KEY_FORBIDDEN_TYPES);
@@ -117,7 +118,7 @@ final class RegistryLoader {
                 storage.forbidType(typesJson.getString(i));
             }
         }catch(Exception e) {
-            System.err.println(e.getMessage());
+            throw new RegistryException();
         }
     }
 }
