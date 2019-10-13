@@ -1,12 +1,12 @@
 package rs.raf.storage.spec.res;
 
-public class Res {
+public final class Res {
 
-    public static class Registry {
+    public static final class Registry {
         public static final String PATH = "~/.registry";
     }
 
-    public static class Wildcard {
+    public static final class Wildcard {
         public static final String SEPARATOR = "${separator}";
         public static final String USER = "${user}";
         public static final String FILE = "${file}";
@@ -14,7 +14,7 @@ public class Res {
         public static final String DRIVER = "${driver}";
     }
 
-    public static class Error {
+    public static final class Error {
         public static final String PRIVILEGE = String.format(
                 "User %s is not authorized to perform the specified operation on the file %s",
                 Wildcard.USER,

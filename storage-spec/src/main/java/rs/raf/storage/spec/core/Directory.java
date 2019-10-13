@@ -15,7 +15,7 @@ public abstract class Directory extends File {
     }
 
     @Override
-    void extract(List<File> files) {
+    public void extract(List<File> files) {
         super.extract(files);
 
         for(File child : getChildren()) {

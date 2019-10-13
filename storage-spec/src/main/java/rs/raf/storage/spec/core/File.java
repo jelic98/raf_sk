@@ -27,7 +27,7 @@ public abstract class File {
 
     public abstract void download(String path);
 
-    void extract(List<File> files) {
+    public void extract(List<File> files) {
         files.add(this);
     }
 
@@ -77,7 +77,7 @@ public abstract class File {
         return metadata;
     }
 
-    final void setMetadata(Metadata metadata) {
+    public final void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
 
