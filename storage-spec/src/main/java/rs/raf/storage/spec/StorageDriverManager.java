@@ -1,8 +1,13 @@
 package rs.raf.storage.spec;
 
+import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 
+/**
+ * Possible problem is multithreading with multiple active user on same storage.
+ *      Implementation of {@link Storage#getActiveUser()} method needs to change.
+ */
 public abstract class StorageDriverManager {
 
     private static StorageDriver driver;

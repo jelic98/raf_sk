@@ -28,6 +28,8 @@ public final class Registry {
             throw new AuthenticationException(user);
         }
 
+        initializeRegistryFile();
+
         loader.load(storage);
     }
 
@@ -36,19 +38,25 @@ public final class Registry {
             throw new AuthenticationException(user);
         }
 
+        initializeRegistryFile();
+
         saver.save(storage);
     }
 
     private boolean authenticationPassed(User user) {
         try {
             JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
-            JSONObject userJson = registryJson.getJSONObject("users").getJSONObject(hasher.hashUsername(user));
+            JSONObject userJson = registryJson.getJSONObject(Res.Registry.KEY_USERS).getJSONObject(hasher.hashUsername(user));
 
-            return userJson.get("password").equals(hasher.hashPassword(user));
+            return userJson.get(Res.Registry.KEY_PASSWORD).equals(hasher.hashPassword(user));
         }catch(Exception e) {
             System.err.println(e.getMessage());
         }
 
         return false;
+    }
+
+    private void initializeRegistryFile() {
+        // TODO [CONSIDER] Create registry file if it does not exist
     }
 }

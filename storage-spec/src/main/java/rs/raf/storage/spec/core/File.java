@@ -1,11 +1,15 @@
 package rs.raf.storage.spec.core;
 
+import rs.raf.storage.spec.auth.Authorizer;
+import rs.raf.storage.spec.exception.AuthenticationException;
+import rs.raf.storage.spec.exception.PrivilegeException;
 import rs.raf.storage.spec.res.Res;
 import java.util.List;
 
 public abstract class File {
 
     private static final PathResolver resolver;
+    private static final Authorizer authorizer;
 
     private String name;
     private Directory parent;
@@ -13,25 +17,47 @@ public abstract class File {
 
     static {
          resolver = new PathResolver();
+         authorizer = new Authorizer();
     }
 
     public File(String name) {
         this.name = name;
     }
 
-    public abstract void delete();
+    public void delete() throws PrivilegeException {
+        authorizer.checkDelete(Storage.getActiveUser(), this);
 
-    public abstract void copy(Directory destination);
+        onDelete();
+    }
 
-    public abstract void upload(Directory destination);
+    public void copy(Directory destination) throws PrivilegeException {
+        authorizer.checkWrite(Storage.getActiveUser(), this);
 
-    public abstract void download(String path);
+        onCopy(destination);
+    }
+
+    public void upload(Directory destination) throws PrivilegeException {
+        authorizer.checkWrite(Storage.getActiveUser(), this);
+
+        onUpload(destination);
+    }
+
+    public void download(String path) throws PrivilegeException {
+        authorizer.checkRead(Storage.getActiveUser(), this);
+
+        onDownload(path);
+    }
+
+    protected abstract void onDelete();
+    protected abstract void onCopy(Directory destination);
+    protected abstract void onUpload(Directory destination);
+    protected abstract void onDownload(String path);
 
     public void extract(List<File> files) {
         files.add(this);
     }
 
-    public void move(Directory destination) {
+    public void move(Directory destination) throws PrivilegeException {
         this.copy(destination);
         this.delete();
     }
