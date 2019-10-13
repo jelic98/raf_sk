@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class LocalArchiver extends Archiver {
@@ -41,7 +42,28 @@ public class LocalArchiver extends Archiver {
 
     @Override
     public void unarchive(File file) {
-    	
+    	String fileZip = file.getPath();
+        java.io.File destDir = new java.io.File(file.getParent().getPath());
+        byte[] buffer = new byte[1024];
+        try {
+	        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+	        ZipEntry zipEntry = zis.getNextEntry();
+	        while (zipEntry != null) {
+	            java.io.File newFile = new java.io.File(destDir, fileZip);
+	            FileOutputStream fos = new FileOutputStream(newFile);
+	            int len;
+	            while ((len = zis.read(buffer)) > 0) {
+	                fos.write(buffer, 0, len);
+	            }
+	            fos.close();
+	            zipEntry = zis.getNextEntry();
+	        }
+	        zis.closeEntry();
+	        zis.close();
+        }catch (IOException e) {
+		   e.printStackTrace();
+        }
+        
     }
     
     void zipFile(java.io.File zipFile, String folder) {
