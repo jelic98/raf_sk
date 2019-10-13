@@ -2,6 +2,7 @@ package rs.raf.storage.spec.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class Metadata {
 
@@ -25,5 +26,9 @@ public final class Metadata {
 
     public void clear() {
         metadata.clear();
+    }
+
+    public Set<String> getKeys() {
+        return metadata.keySet();
     }
 }

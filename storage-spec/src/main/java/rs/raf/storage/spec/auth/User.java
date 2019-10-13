@@ -6,15 +6,11 @@ import java.util.List;
 
 public final class User {
 
-    private static final Authorizer authorizer;
+    // TODO Add interface for managing users
 
     private String name, password;
     private List<Privilege> privileges;
     private boolean saved;
-
-    static {
-        authorizer = new Authorizer();
-    }
 
     public User(String name, String password) {
         this.name = name;
@@ -44,7 +40,7 @@ public final class User {
             }
         }
 
-        return authorizer.getDefaultPrivilege(file);
+        return null;
     }
 
     public boolean isSaved() {

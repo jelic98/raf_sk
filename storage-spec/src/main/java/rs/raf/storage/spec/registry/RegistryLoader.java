@@ -32,7 +32,7 @@ final class RegistryLoader {
     }
 
     private void loadFiles(Storage storage) {
-        // TODO Populate file tree from local file system in implementation
+        // TODO [CONSIDER] Load file tree with call to storage.setRoot()
     }
 
     private void loadUsers(Storage storage) {
@@ -40,24 +40,28 @@ final class RegistryLoader {
 
         try {
             JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
-            JSONObject usersJson = registryJson.getJSONObject("users");
+            JSONObject usersJson = registryJson.getJSONObject(Res.Registry.KEY_USERS);
 
             Iterator<String> userHashes = usersJson.keys();
 
             while(userHashes.hasNext()) {
                 JSONObject userJson = usersJson.getJSONObject(userHashes.next());
 
-                User user = new User(userJson.getString("username"), userJson.getString("password"));
+                User user = new User(userJson.getString(Res.Registry.KEY_USERNAME), userJson.getString(Res.Registry.KEY_PASSWORD));
                 user.setSaved(true);
 
-                JSONArray privilegesJson = userJson.getJSONArray("privileges");
+                if(registryJson.getString(Res.Registry.KEY_OWNER).equals(user.getName())) {
+                    storage.setOwner(user);
+                }
+
+                JSONArray privilegesJson = userJson.getJSONArray(Res.Registry.KEY_PRIVILEGES);
 
                 for(int i = 0; i < privilegesJson.length(); i++) {
                     JSONObject privilegeJson = privilegesJson.getJSONObject(i);
-                    String fileHash = privilegeJson.getString("file");
-                    boolean read = privilegeJson.getBoolean("read");
-                    boolean write = privilegeJson.getBoolean("write");
-                    boolean delete = privilegeJson.getBoolean("delete");
+                    String fileHash = privilegeJson.getString(Res.Registry.KEY_FILE);
+                    boolean read = privilegeJson.getBoolean(Res.Registry.KEY_READ);
+                    boolean write = privilegeJson.getBoolean(Res.Registry.KEY_WRITE);
+                    boolean delete = privilegeJson.getBoolean(Res.Registry.KEY_DELETE);
 
                     File file = files.get(fileHash);
 
@@ -78,7 +82,7 @@ final class RegistryLoader {
 
         try {
             JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
-            JSONObject allMetadataJson = registryJson.getJSONObject("metadata");
+            JSONObject allMetadataJson = registryJson.getJSONObject(Res.Registry.KEY_METADATA);
 
             for(Map.Entry<String, File> entry : files.entrySet()) {
                 String fileHash = entry.getKey();
@@ -107,7 +111,7 @@ final class RegistryLoader {
     private void loadForbiddenTypes(Storage storage) {
         try {
             JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
-            JSONArray typesJson = registryJson.getJSONArray("forbiddenTypes");
+            JSONArray typesJson = registryJson.getJSONArray(Res.Registry.KEY_FORBIDDEN_TYPES);
 
             for(int i = 0; i < typesJson.length(); i++) {
                 storage.forbidType(typesJson.getString(i));

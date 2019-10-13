@@ -18,15 +18,15 @@ public final class Privilege {
         return file;
     }
 
-    boolean canRead() {
+    public boolean canRead() {
         return read;
     }
 
-    boolean canWrite() {
+    public boolean canWrite() {
         return write;
     }
 
-    boolean canDelete() {
+    public boolean canDelete() {
         return delete;
     }
 
