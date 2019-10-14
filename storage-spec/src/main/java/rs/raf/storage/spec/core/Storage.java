@@ -61,7 +61,7 @@ public abstract class Storage {
         onConnect();
     }
 
-    public final void disconnect(String uid, User user) throws StorageException {
+    public final void disconnect(User user) throws StorageException {
         uid = null;
 
         registry.save(user, this);
