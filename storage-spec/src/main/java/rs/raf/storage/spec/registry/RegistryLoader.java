@@ -2,15 +2,17 @@ package rs.raf.storage.spec.registry;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
+import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
+import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import rs.raf.storage.spec.exception.RegistryException;
+import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
-
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,15 +30,9 @@ final class RegistryLoader {
     }
 
     void load(Storage storage) throws RegistryException {
-        loadFiles(storage);
-
         loadUsers(storage);
         loadMetadata(storage);
         loadForbiddenTypes(storage);
-    }
-
-    private void loadFiles(Storage storage) {
-        // TODO Load file tree with call to storage.setRoot()
     }
 
     private void loadUsers(Storage storage) throws RegistryException {

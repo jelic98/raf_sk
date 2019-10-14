@@ -49,8 +49,10 @@ public abstract class Storage {
         }
     }
 
-    public final void connect(String uid, User user) throws StorageException {
+    public final void connect(String uid, String path, User user) throws StorageException {
         this.uid = uid;
+
+        setRoot(buildRoot(path));
 
         registry.load(user, this);
 
@@ -60,7 +62,7 @@ public abstract class Storage {
     }
 
     public final void disconnect(String uid, User user) throws StorageException {
-        this.uid = uid;
+        uid = null;
 
         registry.save(user, this);
 
@@ -71,6 +73,7 @@ public abstract class Storage {
 
     protected abstract void onConnect();
     protected abstract void onDisconnect();
+    protected abstract Directory buildRoot(String path);
 
     public final String getUid() {
         return uid;

@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
+import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
@@ -58,15 +59,9 @@ final class RegistrySaver {
     }
 
     void save(Storage storage) throws RegistryException {
-        saveFiles(storage);
-
         saveUsers(storage);
         saveMetadata(storage);
         saveForbiddenTypes(storage);
-    }
-
-    private void saveFiles(Storage storage) {
-        // TODO Save file tree with call to storage.getRoot()
     }
 
     private void saveUsers(Storage storage) throws RegistryException {
