@@ -3,7 +3,6 @@ package rs.raf.storage.spec.core;
 import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.auth.Authorizer;
 import rs.raf.storage.spec.auth.User;
-import rs.raf.storage.spec.exception.AuthenticationException;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import rs.raf.storage.spec.exception.PrivilegeException;
 import rs.raf.storage.spec.exception.StorageException;
@@ -23,6 +22,7 @@ public abstract class Storage {
     private List<User> users;
     private List<String> forbiddenTypes;
     private Authorizer authorizer;
+    private String uid;
 
     private Storage() {
         reset();
@@ -49,7 +49,9 @@ public abstract class Storage {
         }
     }
 
-    public void connect(User user) throws StorageException {
+    public final void connect(String uid, User user) throws StorageException {
+        this.uid = uid;
+
         registry.load(user, this);
 
         activeUser = user;
@@ -57,7 +59,9 @@ public abstract class Storage {
         onConnect();
     }
 
-    public void disconnect(User user) throws StorageException {
+    public final void disconnect(String uid, User user) throws StorageException {
+        this.uid = uid;
+
         registry.save(user, this);
 
         activeUser = null;
@@ -68,24 +72,23 @@ public abstract class Storage {
     protected abstract void onConnect();
     protected abstract void onDisconnect();
 
+    public final String getUid() {
+        return uid;
+    }
+
     public final Directory getRoot() {
         return root;
     }
 
-    public void setRoot(Directory root) {
+    public final void setRoot(Directory root) {
         this.root = root;
     }
 
-    public User getOwner() {
+    public final User getOwner() {
         return owner;
     }
 
-    // TODO Make this method invisible to the implementation
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public User getActiveUser() {
+    public final User getActiveUser() {
         return activeUser;
     }
 

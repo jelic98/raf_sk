@@ -9,6 +9,9 @@ import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ final class RegistryLoader {
     }
 
     private void loadFiles(Storage storage) {
-        // TODO [CONSIDER] Load file tree with call to storage.setRoot()
+        // TODO Load file tree with call to storage.setRoot()
     }
 
     private void loadUsers(Storage storage) throws RegistryException {
@@ -52,7 +55,7 @@ final class RegistryLoader {
                 user.setSaved(true);
 
                 if(registryJson.getString(Res.Registry.KEY_OWNER).equals(user.getName())) {
-                    storage.setOwner(user);
+                    invokeSetter("owner", storage, user);
                 }
 
                 JSONArray privilegesJson = userJson.getJSONArray(Res.Registry.KEY_PRIVILEGES);
@@ -120,5 +123,16 @@ final class RegistryLoader {
         }catch(Exception e) {
             throw new RegistryException();
         }
+    }
+
+    private void invokeSetter(String field, Object object, Object value) throws ReflectiveOperationException {
+        if(object == null || value == null) {
+            return;
+        }
+
+        String setterName = "set" + (field.substring(0, 1).toUpperCase() + field.substring(1));
+
+        Method method = object.getClass().getMethod(setterName, value.getClass());
+        method.invoke(object, value);
     }
 }

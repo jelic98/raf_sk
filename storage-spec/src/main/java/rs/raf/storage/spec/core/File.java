@@ -2,22 +2,19 @@ package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.auth.Authorizer;
 import rs.raf.storage.spec.exception.ForbiddenTypeException;
-import rs.raf.storage.spec.exception.PrivilegeException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
 import java.util.List;
 
 public abstract class File {
 
-    private static final PathResolver resolver;
     private static final Authorizer authorizer;
 
-    private String name, type;
+    private String name;
     private Directory parent;
     private Metadata metadata;
 
     static {
-         resolver = new PathResolver();
          authorizer = new Authorizer();
     }
 
@@ -57,15 +54,18 @@ public abstract class File {
     protected abstract void onCopy(Directory destination);
     protected abstract void onUpload(Directory destination);
     protected abstract void onDownload(String path);
-    protected abstract String getType();
 
     public void extract(List<File> files) {
         files.add(this);
     }
 
-    public void move(Directory destination) throws StorageException {
+    public final void move(Directory destination) throws StorageException {
         this.copy(destination);
         this.delete();
+    }
+
+    public final String getType() {
+        return name.contains(".") ? name.substring(name.lastIndexOf('.') + 1) : "";
     }
 
     public final String getPath() {
@@ -83,7 +83,7 @@ public abstract class File {
         path.append(getName());
 
         if(initial) {
-            return resolver.separate(path.toString());
+            return new Path(path.toString()).build();
         }else {
             return path.toString();
         }

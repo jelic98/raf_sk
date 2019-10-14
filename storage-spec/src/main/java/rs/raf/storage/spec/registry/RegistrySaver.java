@@ -66,7 +66,7 @@ final class RegistrySaver {
     }
 
     private void saveFiles(Storage storage) {
-        // TODO [CONSIDER] Save file tree with call to storage.getRoot()
+        // TODO Save file tree with call to storage.getRoot()
     }
 
     private void saveUsers(Storage storage) throws RegistryException {

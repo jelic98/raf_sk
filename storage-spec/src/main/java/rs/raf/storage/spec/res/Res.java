@@ -3,7 +3,6 @@ package rs.raf.storage.spec.res;
 public final class Res {
 
     public static final class Registry {
-        public static final String PATH = "~/.registry";
         public final static String KEY_OWNER = "owner";
         public final static String KEY_USERS = "users";
         public final static String KEY_USERNAME = "username";
@@ -15,10 +14,15 @@ public final class Res {
         public final static String KEY_DELETE = "delete";
         public final static String KEY_METADATA = "metadata";
         public final static String KEY_FORBIDDEN_TYPES = "forbiddenTypes";
+        public static final String PATH = String.format(
+                "%s%s.registry_",
+                Wildcard.HOME,
+                Wildcard.SEPARATOR);
     }
 
     public static final class Wildcard {
         public static final String SEPARATOR = "${separator}";
+        public static final String HOME = "${home}";
         public static final String USER = "${user}";
         public static final String FILE = "${file}";
         public static final String TYPE = "${type}";

@@ -2,11 +2,14 @@ package rs.raf.storage.spec.registry;
 
 import org.json.JSONObject;
 import rs.raf.storage.spec.auth.User;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.AuthenticationException;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
+
+import java.io.File;
 
 public final class Registry {
 
@@ -30,7 +33,7 @@ public final class Registry {
             throw new AuthenticationException(user);
         }
 
-        initializeRegistryFile();
+        initializeRegistryFile(storage);
 
         loader.load(storage);
     }
@@ -40,7 +43,7 @@ public final class Registry {
             throw new AuthenticationException(user);
         }
 
-        initializeRegistryFile();
+        initializeRegistryFile(storage);
 
         saver.save(storage);
     }
@@ -56,7 +59,11 @@ public final class Registry {
         }
     }
 
-    private void initializeRegistryFile() {
-        // TODO [CONSIDER] Create registry file if it does not exist
+    private void initializeRegistryFile(Storage storage) {
+        File registryFile = new File(new Path(Res.Registry.PATH + storage.getUid()).build());
+
+        if(!registryFile.exists()) {
+            registryFile.mkdirs();
+        }
     }
 }

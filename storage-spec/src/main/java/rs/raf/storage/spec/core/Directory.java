@@ -1,6 +1,5 @@
 package rs.raf.storage.spec.core;
 
-import rs.raf.storage.spec.exception.PrivilegeException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.search.Criteria;
 import java.util.LinkedList;
@@ -17,11 +16,29 @@ public abstract class Directory extends File {
     }
 
     @Override
-    public void extract(List<File> files) {
-        super.extract(files);
+    public void delete() throws StorageException {
+        for(File child : getChildren()) {
+            child.delete();
+        }
+
+        super.delete();
+    }
+
+    @Override
+    public void copy(Directory destination) throws StorageException {
+        super.copy(destination);
 
         for(File child : getChildren()) {
-            child.extract(files);
+            child.copy(destination);
+        }
+    }
+
+    @Override
+    public void upload(Directory destination) throws StorageException {
+        super.upload(destination);
+
+        for(File child : getChildren()) {
+            child.upload(destination);
         }
     }
 
@@ -31,6 +48,15 @@ public abstract class Directory extends File {
 
         for(File child : getChildren()) {
             child.download(path);
+        }
+    }
+
+    @Override
+    public void extract(List<File> files) {
+        super.extract(files);
+
+        for(File child : getChildren()) {
+            child.extract(files);
         }
     }
 
