@@ -1,6 +1,8 @@
 package rs.raf.storage.local.archive;
 
+import rs.raf.storage.local.core.LocalDirectory;
 import rs.raf.storage.spec.archive.Archiver;
+import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.res.Res;
 
@@ -26,6 +28,8 @@ public class LocalArchiver extends Archiver {
     	String tmpStr = "tmpDir";
     	String parent = list.get(0).getParent().getPath();
     	java.io.File folder = new java.io.File(parent + tmpStr);
+    	LocalDirectory absFolder = new LocalDirectory(folder.toString());
+    	absFolder.extract(list);
     	
     	try {
     		
@@ -38,6 +42,7 @@ public class LocalArchiver extends Archiver {
 		}
     	
     	zipFile(folder, parent);
+    	folder.delete();
     }
 
     @Override
