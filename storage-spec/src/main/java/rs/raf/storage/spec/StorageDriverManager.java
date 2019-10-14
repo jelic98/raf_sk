@@ -3,7 +3,7 @@ package rs.raf.storage.spec;
 import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 
-public abstract class StorageDriverManager {
+public final class StorageDriverManager {
 
     private static StorageDriver driver;
 

@@ -5,11 +5,13 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.AuthenticationException;
+import rs.raf.storage.spec.exception.NonExistenceException;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
 
 import java.io.File;
+import java.io.IOException;
 
 public final class Registry {
 
@@ -29,21 +31,25 @@ public final class Registry {
     }
 
     public void load(User user, Storage storage) throws StorageException {
+        if(!registryExists(storage)) {
+            return;
+        }
+
         if(!authenticationPassed(user)) {
             throw new AuthenticationException(user);
         }
-
-        initializeRegistryFile(storage);
 
         loader.load(storage);
     }
 
     public void save(User user, Storage storage) throws StorageException {
+        if(!registryExists(storage)) {
+            return;
+        }
+
         if(!authenticationPassed(user)) {
             throw new AuthenticationException(user);
         }
-
-        initializeRegistryFile(storage);
 
         saver.save(storage);
     }
@@ -59,11 +65,21 @@ public final class Registry {
         }
     }
 
-    private void initializeRegistryFile(Storage storage) {
+    private boolean registryExists(Storage storage) throws RegistryException {
         File registryFile = new File(new Path(Res.Registry.PATH + storage.getUid()).build());
 
         if(!registryFile.exists()) {
-            registryFile.mkdirs();
+            registryFile.getParentFile().mkdirs();
+
+            try {
+                registryFile.createNewFile();
+            }catch(IOException e) {
+                throw new RegistryException();
+            }
+
+            return false;
         }
+
+        return true;
     }
 }

@@ -7,6 +7,7 @@ public final class Path {
 
     private String path;
 
+    // TODO Provide storage and resolve path using it or throw nonexistenceexception
     public Path(String path) {
         this.path = path;
     }

@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
-import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
@@ -15,38 +14,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 final class RegistrySaver {
-
-    /*
-        EXAMPLE REGISTRY JSON
-
-        {
-            "owner": "user_2_hash",
-            "users": {
-                "user_1_hash": {
-                    "password": "password_hash",
-                    "privileges": [
-                        {
-                            "file": "file_1_hash",
-                            "read": true,
-                            "write": true,
-                            "delete": false,
-                        }
-                    ]
-                }
-            },
-            "metadata": {
-                "file_1_hash": {
-                    "key1": "value1",
-                    "key2": "value2"
-                }
-            },
-            "forbiddenTypes": [
-                "exe",
-                "rar",
-                "sh"
-            ]
-        }
-     */
 
     private JsonParser parser;
     private FileExtractor extractor;

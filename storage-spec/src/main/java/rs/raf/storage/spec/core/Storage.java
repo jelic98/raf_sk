@@ -50,6 +50,10 @@ public abstract class Storage {
     }
 
     public final void connect(String uid, String path, User user) throws StorageException {
+        if(activeUser != null) {
+            return;
+        }
+
         this.uid = uid;
 
         setRoot(buildRoot(path));
@@ -62,6 +66,10 @@ public abstract class Storage {
     }
 
     public final void disconnect(User user) throws StorageException {
+        if(activeUser == null) {
+            return;
+        }
+
         uid = null;
 
         registry.save(user, this);

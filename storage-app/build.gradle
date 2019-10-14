@@ -23,5 +23,7 @@ dependencies {
     // TODO Use JitPack for library distribution
     compile fileTree(dir: 'lib', include: '*.jar')
 
+    compile group: 'org.json', name: 'json', version: '20190722'
+
     implementation 'com.github.jelic98:konzole:v1.0.1'
 }
