@@ -7,6 +7,7 @@ import java.nio.file.StandardCopyOption;
 
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
+import rs.raf.storage.spec.exception.StorageException;
 
 public class LocalFile extends File {
 
@@ -15,34 +16,39 @@ public class LocalFile extends File {
 	}
 
 	@Override
-    public void delete() {
+	protected void onDelete() {
 		java.io.File file = new java.io.File(this.getPath());
 		file.delete();
 		this.getParent().getChildren().remove(this);
-    }
+	}
 
-    @Override
-    public void copy(Directory directory) {
-    	try {
-			Files.copy(Paths.get(this.getPath()), Paths.get(directory.getPath()), StandardCopyOption.REPLACE_EXISTING);
-			directory.getChildren().add(this);
+	@Override
+	protected void onCopy(Directory destination) {
+		try {
+			Files.copy(Paths.get(this.getPath()), Paths.get(destination.getPath()), StandardCopyOption.REPLACE_EXISTING);
+			destination.getChildren().add(this);
     	} catch (IOException e) {
 			e.printStackTrace();
 		}
-    }
+	}
 
-    @Override
-    public void upload(Directory directory) {
+	@Override
+	protected void onUpload(Directory destination) {
+		onCopy(destination);
+	}
 
-    }
-
-    @Override
-    public void download(String s) {
-    	try {
-			Files.copy(Paths.get(this.getPath()), Paths.get(s), StandardCopyOption.REPLACE_EXISTING);
+	@Override
+	protected void onDownload(String path) {
+		try {
+			Files.copy(Paths.get(this.getPath()), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-    	
-    }
+	}
+
+	@Override
+	protected String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
