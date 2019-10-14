@@ -62,6 +62,10 @@ public abstract class Storage {
 
         activeUser = user;
 
+        if(owner == null) {
+            owner = user;
+        }
+
         onConnect();
     }
 
