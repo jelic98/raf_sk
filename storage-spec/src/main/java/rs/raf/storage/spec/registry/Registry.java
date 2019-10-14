@@ -66,7 +66,7 @@ public final class Registry {
     }
 
     private boolean registryExists(Storage storage) throws RegistryException {
-        File registryFile = new File(new Path(Res.Registry.PATH + storage.getUid()).build());
+        File registryFile = new File(new Path(Res.Registry.PATH + storage.getUid(), storage).build());
 
         if(!registryFile.exists()) {
             registryFile.getParentFile().mkdirs();

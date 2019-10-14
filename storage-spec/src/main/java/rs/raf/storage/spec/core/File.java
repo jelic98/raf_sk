@@ -83,7 +83,7 @@ public abstract class File {
         path.append(getName());
 
         if(initial) {
-            return new Path(path.toString()).build();
+            return new Path(path.toString(), null).build();
         }else {
             return path.toString();
         }

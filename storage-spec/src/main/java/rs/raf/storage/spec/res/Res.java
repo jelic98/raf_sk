@@ -40,7 +40,10 @@ public final class Res {
         public static final String AUTHENTICATION = String.format(
                 "Wrong password for user %s",
                 Wildcard.USER);
-        public static final String NON_EXISTENCE = String.format(
+        public static final String NON_EXISTENCE_PATH = String.format(
+                "%s does not exist",
+                Wildcard.FILE);
+        public static final String NON_EXISTENCE_FILE = String.format(
                 "%s %s does not exist",
                 Wildcard.TYPE,
                 Wildcard.FILE);
