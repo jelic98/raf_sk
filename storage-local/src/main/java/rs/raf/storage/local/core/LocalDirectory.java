@@ -17,9 +17,6 @@ public class LocalDirectory extends Directory {
 
 	@Override
 	protected void onDelete() {
-		for(File f : this.getChildren()) {
-			f.onDelete();
-		}
 		this.getParent().getChildren().remove(this);
 		java.io.File dir = new java.io.File(this.getPath());
 		dir.delete();
@@ -30,10 +27,6 @@ public class LocalDirectory extends Directory {
 		try {
 			Files.copy(Paths.get(this.getPath()), Paths.get(destination.getPath()), StandardCopyOption.REPLACE_EXISTING);
 			destination.getChildren().add(this);
-			
-			for(File f : this.getChildren()) {
-				f.onCopy(this);
-			}
 			
     	} catch (IOException e) {
 			e.printStackTrace();
@@ -52,11 +45,5 @@ public class LocalDirectory extends Directory {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	protected String getType() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

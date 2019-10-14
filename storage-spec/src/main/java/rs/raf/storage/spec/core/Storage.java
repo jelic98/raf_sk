@@ -24,7 +24,7 @@ public abstract class Storage {
     private Authorizer authorizer;
     private String uid;
 
-    private Storage() {
+    protected Storage() {
         reset();
     }
 

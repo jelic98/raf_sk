@@ -45,10 +45,4 @@ public class LocalFile extends File {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	protected String getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
