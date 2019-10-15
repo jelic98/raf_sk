@@ -73,6 +73,7 @@ public abstract class Directory extends File {
 
         File file = StorageDriverManager.getDriver().getFile(name);
         file.setParent(this);
+        file.onUpload(path, this);
 
         children.add(file);
     }

@@ -44,6 +44,7 @@ public abstract class File {
 
     protected abstract void onDelete() throws StorageException;
     protected abstract void onCopy(Directory destination) throws StorageException;
+    protected abstract void onUpload(String path, Directory destination) throws StorageException;
     protected abstract void onDownload(String path) throws StorageException;
 
     public void extract(List<File> files) {
