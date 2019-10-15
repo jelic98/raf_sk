@@ -8,8 +8,10 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.*;
 import rs.raf.storage.spec.exception.NonExistenceException;
 import rs.raf.storage.spec.exception.StorageException;
+import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import rs.raf.storage.spec.search.CriteriaType;
+import java.util.LinkedList;
 import java.util.List;
 
 public class App {
@@ -33,6 +35,9 @@ public class App {
     }
 
     private void log(Exception e) {
+        // FOR TESTING PURPOSES ONLY
+         e.printStackTrace();
+
         System.err.println(e.getMessage());
 
         try {
@@ -52,7 +57,7 @@ public class App {
         private User user;
         private App app;
 
-        public StorageStructure(App app) throws Exception {
+        StorageStructure(App app) throws Exception {
             this.app = app;
 
             Class.forName("rs.raf.storage.local.LocalStorageDriver");
@@ -182,7 +187,7 @@ public class App {
 
                             try {
                                 source = driver.getFile(sourcePath);
-                                destination = (Directory) new Path("\\" + destinationPath, storage).resolve();
+                                destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
                                 source.upload(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
@@ -196,14 +201,37 @@ public class App {
                     }
                             .addInput(new Input("File"))
                             .addInput(new Input("Destination")))
-                    .addOption(new Option("Upload multiple files"))
+                    .addOption(new ExecuteOption("Upload multiple files") {
+                        @Override
+                        public void execute() {
+                            String[] sourcePaths = getInput("sources").getValue().split("\\w");
+                            String destinationPath = getInput("destination").getValue();
+
+                            List<File> files = new LinkedList<>();
+
+                            for(String sourcePath : sourcePaths) {
+                                files.add(driver.getFile(sourcePath));
+                            }
+
+                            try {
+                                Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
+                                destination.upload(files);
+                            } catch (ClassCastException e) {
+                                log("Directory not selected");
+                                return;
+                            } catch (StorageException e) {
+                                app.log(e);
+                            }
+
+                            log("Uploaded successfully");
+                        }
+                    }.addInput(new Input("sources", "Sources (space separated)"))
+                    .addInput(new Input("Destination")))
                     .addOption(new ExecuteOption("Download file") {
                         @Override
                         public void execute() {
                             String sourcePath = getInput("source").getValue();
                             String destination = getInput("destination").getValue();
-
-                            // TODO Add input Total files and iterate
 
                             File source;
 
@@ -287,18 +315,21 @@ public class App {
                             String path = getInput("file").getValue();
 
                             File file = null;
+
 							try {
 								file = new Path(path, storage).resolve();
 							} catch(StorageException e) {
                             	app.log(e);
                             }
-							
-                            Metadata metadata = file.getMetadata();
 
-                            for (String key : metadata.getKeys()) {
-                                String value = metadata.get(key);
+							if(file != null) {
+                                Metadata metadata = file.getMetadata();
 
-                                log(key + ": " + value);
+                                for (String key : metadata.getKeys()) {
+                                    String value = metadata.get(key);
+
+                                    log(key + ": " + value);
+                                }
                             }
                         }
                     }
@@ -311,13 +342,17 @@ public class App {
                             String value = getInput("value").getValue();
 
                             File file = null;
+
 							try {
 								file = new Path(path, storage).resolve();
 							} catch(StorageException e) {
                             	app.log(e);
                             }
-                            Metadata metadata = file.getMetadata();
-                            metadata.add(key, value);
+
+							if(file != null) {
+                                Metadata metadata = file.getMetadata();
+                                metadata.add(key, value);
+                            }
 
                             log("Metadata successfully added");
                         }
@@ -341,15 +376,17 @@ public class App {
                                 app.log(e);
                             }
 
-                            List<File> children = directory.getChildren();
+                            if(directory != null) {
+                                List<File> children = directory.getChildren();
 
-                            if (children.isEmpty()) {
-                                log("Empty directory");
-                                return;
-                            }
+                                if (children.isEmpty()) {
+                                    log("Empty directory");
+                                    return;
+                                }
 
-                            for (File child : children) {
-                                log(child.getName());
+                                for (File child : children) {
+                                    log(child.getName());
+                                }
                             }
                         }
                     }
@@ -375,15 +412,17 @@ public class App {
                                                 app.log(e);
                                             }
 
-                                            List<File> matches = directory.search(new Criteria(type, query));
+                                            if(directory != null) {
+                                                List<File> matches = directory.search(new Criteria(type, query));
 
-                                            if (matches.isEmpty()) {
-                                                log("No matches");
-                                                return;
-                                            }
+                                                if (matches.isEmpty()) {
+                                                    log("No matches");
+                                                    return;
+                                                }
 
-                                            for (File match : matches) {
-                                                log(match.getName());
+                                                for (File match : matches) {
+                                                    log(match.getName());
+                                                }
                                             }
                                         }
                                     })
@@ -406,15 +445,17 @@ public class App {
                                                 app.log(e);
                                             }
 
-                                            List<File> matches = directory.search(new Criteria(type, query));
+                                            if(directory != null) {
+                                                List<File> matches = directory.search(new Criteria(type, query));
 
-                                            if (matches.isEmpty()) {
-                                                log("No matches");
-                                                return;
-                                            }
+                                                if (matches.isEmpty()) {
+                                                    log("No matches");
+                                                    return;
+                                                }
 
-                                            for (File match : matches) {
-                                                log(match.getName());
+                                                for (File match : matches) {
+                                                    log(match.getName());
+                                                }
                                             }
                                         }
                                     })
@@ -437,15 +478,17 @@ public class App {
                                                 app.log(e);
                                             }
 
-                                            List<File> matches = directory.search(new Criteria(type, query));
+                                            if(directory != null) {
+                                                List<File> matches = directory.search(new Criteria(type, query));
 
-                                            if (matches.isEmpty()) {
-                                                log("No matches");
-                                                return;
-                                            }
+                                                if (matches.isEmpty()) {
+                                                    log("No matches");
+                                                    return;
+                                                }
 
-                                            for (File match : matches) {
-                                                log(match.getName());
+                                                for (File match : matches) {
+                                                    log(match.getName());
+                                                }
                                             }
                                         }
                                     })
@@ -468,15 +511,17 @@ public class App {
                                                 app.log(e);
                                             }
 
-                                            List<File> matches = directory.search(new Criteria(type, query));
+                                            if(directory != null) {
+                                                List<File> matches = directory.search(new Criteria(type, query));
 
-                                            if (matches.isEmpty()) {
-                                                log("No matches");
-                                                return;
-                                            }
+                                                if (matches.isEmpty()) {
+                                                    log("No matches");
+                                                    return;
+                                                }
 
-                                            for (File match : matches) {
-                                                log(match.getName());
+                                                for (File match : matches) {
+                                                    log(match.getName());
+                                                }
                                             }
                                         }
                                     })

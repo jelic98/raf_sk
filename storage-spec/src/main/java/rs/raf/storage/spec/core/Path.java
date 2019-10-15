@@ -21,6 +21,8 @@ public final class Path {
 
         Directory root = storage.getRoot();
 
+        String path = build();
+
         if(root != null) {
             root.extract(files);
         }else {

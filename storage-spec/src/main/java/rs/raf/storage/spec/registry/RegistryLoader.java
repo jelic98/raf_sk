@@ -6,6 +6,7 @@ import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;
@@ -35,7 +36,7 @@ final class RegistryLoader {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             JSONObject usersJson = registryJson.getJSONObject(Res.Registry.KEY_USERS);
 
             Iterator<String> userHashes = usersJson.keys();
@@ -77,7 +78,7 @@ final class RegistryLoader {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             JSONObject allMetadataJson = registryJson.getJSONObject(Res.Registry.KEY_METADATA);
 
             for(Map.Entry<String, File> entry : files.entrySet()) {
@@ -106,7 +107,7 @@ final class RegistryLoader {
 
     private void loadForbiddenTypes(Storage storage) throws RegistryException {
         try {
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             JSONArray typesJson = registryJson.getJSONArray(Res.Registry.KEY_FORBIDDEN_TYPES);
 
             for(int i = 0; i < typesJson.length(); i++) {

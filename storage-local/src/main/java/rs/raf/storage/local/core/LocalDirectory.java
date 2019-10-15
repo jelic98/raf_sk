@@ -24,7 +24,6 @@ public class LocalDirectory extends Directory {
 		try {
 			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(destination.getAbsolutePath(getPath())), StandardCopyOption.REPLACE_EXISTING);
 			destination.getChildren().add(this);
-			
     	} catch (IOException e) {
 			e.printStackTrace();
 		}

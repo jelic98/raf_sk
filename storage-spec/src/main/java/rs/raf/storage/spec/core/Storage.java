@@ -7,6 +7,8 @@ import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import rs.raf.storage.spec.exception.PrivilegeException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.registry.Registry;
+import rs.raf.storage.spec.res.Res;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,6 +101,10 @@ public abstract class Storage {
 
     public final String getRootPath() {
         return rootPath;
+    }
+
+    public final String getRegistryPath() {
+        return new Path(Res.Registry.PATH + getUid(), this).build();
     }
 
     public final User getOwner() {

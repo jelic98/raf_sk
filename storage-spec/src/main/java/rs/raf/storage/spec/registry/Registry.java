@@ -35,7 +35,7 @@ public final class Registry {
             return;
         }
 
-        if(!authenticationPassed(user)) {
+        if(!authenticationPassed(user, storage)) {
             throw new AuthenticationException(user);
         }
 
@@ -47,16 +47,16 @@ public final class Registry {
             return;
         }
 
-        if(!authenticationPassed(user)) {
+        if(!authenticationPassed(user, storage)) {
             throw new AuthenticationException(user);
         }
 
         saver.save(storage);
     }
 
-    private boolean authenticationPassed(User user) throws RegistryException {
+    private boolean authenticationPassed(User user, Storage storage) throws RegistryException {
         try {
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             JSONObject userJson = registryJson.getJSONObject(Res.Registry.KEY_USERS).getJSONObject(hasher.hashUsername(user));
 
             return userJson.get(Res.Registry.KEY_PASSWORD).equals(hasher.hashPassword(user));
@@ -66,7 +66,7 @@ public final class Registry {
     }
 
     private boolean registryExists(Storage storage) throws RegistryException {
-        File registryFile = new File(new Path(Res.Registry.PATH + storage.getUid(), storage).build());
+        File registryFile = new File(storage.getRegistryPath());
 
         if(!registryFile.exists()) {
             registryFile.getParentFile().mkdirs();

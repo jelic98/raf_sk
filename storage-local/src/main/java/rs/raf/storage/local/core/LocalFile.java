@@ -17,15 +17,15 @@ public class LocalFile extends File {
 
 	@Override
 	protected void onDelete() {
+		this.getParent().getChildren().remove(this);
 		java.io.File file = new java.io.File(getAbsolutePath(getPath()));
 		file.delete();
-		this.getParent().getChildren().remove(this);
 	}
 
 	@Override
 	protected void onCopy(Directory destination) {
 		try {
-			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(getAbsolutePath(getPath())), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(destination.getAbsolutePath(getPath())), StandardCopyOption.REPLACE_EXISTING);
 			destination.getChildren().add(this);
     	} catch (IOException e) {
 			e.printStackTrace();

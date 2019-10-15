@@ -6,6 +6,7 @@ import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;
@@ -35,7 +36,7 @@ final class RegistrySaver {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             JSONObject usersJson = new JSONObject();
 
             for(User user : storage.getUsers()) {
@@ -71,7 +72,7 @@ final class RegistrySaver {
             registryJson.remove(Res.Registry.KEY_USERS);
             registryJson.put(Res.Registry.KEY_USERS, usersJson);
 
-            Files.write(Paths.get(Res.Registry.PATH), registryJson.toString().getBytes());
+            Files.write(Paths.get(storage.getRegistryPath()), registryJson.toString().getBytes());
         }catch(Exception e) {
             throw new RegistryException();
         }
@@ -98,11 +99,11 @@ final class RegistrySaver {
                 allMetadataJson.put(fileHash, metadataJson);
             }
 
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             registryJson.remove(Res.Registry.KEY_METADATA);
             registryJson.put(Res.Registry.KEY_METADATA, allMetadataJson);
 
-            Files.write(Paths.get(Res.Registry.PATH), registryJson.toString().getBytes());
+            Files.write(Paths.get(storage.getRegistryPath()), registryJson.toString().getBytes());
         }catch(Exception e) {
             throw new RegistryException();
         }
@@ -113,11 +114,11 @@ final class RegistrySaver {
             JSONArray typesArray = new JSONArray();
             typesArray.put(storage.getForbiddenTypes());
 
-            JSONObject registryJson = parser.parseJson(Res.Registry.PATH);
+            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             registryJson.remove(Res.Registry.KEY_FORBIDDEN_TYPES);
             registryJson.put(Res.Registry.KEY_FORBIDDEN_TYPES, typesArray);
 
-            Files.write(Paths.get(Res.Registry.PATH), registryJson.toString().getBytes());
+            Files.write(Paths.get(storage.getRegistryPath()), registryJson.toString().getBytes());
         }catch(Exception e) {
             throw new RegistryException();
         }

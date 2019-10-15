@@ -15,6 +15,8 @@ import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 
 public class LocalStorageDriver extends StorageDriver {
 
+    private boolean instantiated = false;
+
     static {
         try {
             StorageDriverManager.register(new LocalStorageDriver("Local Storage"));
@@ -26,12 +28,9 @@ public class LocalStorageDriver extends StorageDriver {
     private LocalStorageDriver(String name) {
         super(name);
     }
-    
-    private static boolean instantiated = false;
 
     @Override
     public Storage getStorage() {
-    	
         try {
         	if(!instantiated) {
         		instantiated = true;

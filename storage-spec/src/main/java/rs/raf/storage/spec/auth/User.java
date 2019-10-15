@@ -38,7 +38,7 @@ public final class User {
             }
         }
 
-        return null;
+        return new Privilege(file, true, true, true);
     }
 
     public boolean isSaved() {
