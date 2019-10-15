@@ -1,5 +1,6 @@
 package rs.raf.storage.spec.core;
 
+import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.auth.Authorizer;
 import rs.raf.storage.spec.exception.ForbiddenTypeException;
 import rs.raf.storage.spec.exception.StorageException;
@@ -111,6 +112,16 @@ public abstract class File {
 
     public final void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+    }
+
+    public final String getAbsolutePath(String relative) {
+        try {
+            Storage storage = StorageDriverManager.getDriver().getStorage();
+
+            return new Path(storage.getRootPath() + Res.Wildcard.SEPARATOR + relative, storage).build();
+        }catch(StorageException e) {
+            return relative;
+        }
     }
 
     @Override

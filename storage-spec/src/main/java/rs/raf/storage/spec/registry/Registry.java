@@ -80,6 +80,6 @@ public final class Registry {
             return false;
         }
 
-        return true;
+        return registryFile.length() > 0;
     }
 }

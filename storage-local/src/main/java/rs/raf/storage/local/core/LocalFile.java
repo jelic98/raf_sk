@@ -17,7 +17,7 @@ public class LocalFile extends File {
 
 	@Override
 	protected void onDelete() {
-		java.io.File file = new java.io.File(this.getPath());
+		java.io.File file = new java.io.File(getAbsolutePath(getPath()));
 		file.delete();
 		this.getParent().getChildren().remove(this);
 	}
@@ -25,7 +25,7 @@ public class LocalFile extends File {
 	@Override
 	protected void onCopy(Directory destination) {
 		try {
-			Files.copy(Paths.get(this.getPath()), Paths.get(destination.getPath()), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(getAbsolutePath(getPath())), StandardCopyOption.REPLACE_EXISTING);
 			destination.getChildren().add(this);
     	} catch (IOException e) {
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class LocalFile extends File {
 	@Override
 	protected void onDownload(String path) {
 		try {
-			Files.copy(Paths.get(this.getPath()), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -18,6 +18,7 @@ public abstract class Storage {
 
     private Registry registry;
     private Directory root;
+    private String rootPath;
     private User owner, activeUser;
     private List<User> users;
     private List<String> forbiddenTypes;
@@ -56,7 +57,7 @@ public abstract class Storage {
 
         this.uid = uid;
 
-        setRoot(buildRoot(path));
+        root = buildRoot(rootPath = path);
 
         registry.load(user, this);
 
@@ -95,8 +96,8 @@ public abstract class Storage {
         return root;
     }
 
-    public final void setRoot(Directory root) {
-        this.root = root;
+    public final String getRootPath() {
+        return rootPath;
     }
 
     public final User getOwner() {
