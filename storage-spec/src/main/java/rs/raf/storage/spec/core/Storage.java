@@ -65,8 +65,11 @@ public abstract class Storage {
         registry.load(user, this);
 
         activeUser = user;
+        
+        users.add(user);
 
         if(owner == null) {
+        	
             owner = user;
         }
 

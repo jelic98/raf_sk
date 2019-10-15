@@ -40,7 +40,7 @@ public abstract class File {
             throw new ForbiddenTypeException(this);
         }
 
-        authorizer.checkWrite(Storage.instance().getActiveUser(), this);
+        authorizer.checkWrite(Storage.instance().getActiveUser(), destination);
 
         onUpload(destination);
     }
