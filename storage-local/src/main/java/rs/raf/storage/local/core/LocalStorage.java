@@ -2,15 +2,9 @@ package rs.raf.storage.local.core;
 
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.Storage;
-
 import java.io.File;
 
 public class LocalStorage extends Storage {
-
-	
-	public LocalStorage() {
-		super();
-	}
 
 	@Override
 	protected void onConnect() {

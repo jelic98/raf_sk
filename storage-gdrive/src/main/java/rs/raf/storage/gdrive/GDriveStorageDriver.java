@@ -10,14 +10,17 @@ import rs.raf.storage.spec.archive.Archiver;
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Storage;
-import rs.raf.storage.spec.exception.DriverRegisteredException;
+import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
+import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 
 public class GDriveStorageDriver extends StorageDriver {
+
+    private boolean instantiated = false;
 
     static {
         try {
             StorageDriverManager.register(new GDriveStorageDriver("Google Drive Storage"));
-        }catch(DriverRegisteredException e) {
+        }catch(DriverAlreadyRegisteredException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
@@ -28,21 +31,30 @@ public class GDriveStorageDriver extends StorageDriver {
 
     @Override
     public Storage getStorage() {
-        return new GDriveStorage();
-    }
-
-    @Override
-    public Directory getDirectory() {
-        return new GDriveDirectory();
-    }
-
-    @Override
-    public File getFile() {
-        return new GDriveFile();
+        try {
+            if(!instantiated) {
+                instantiated = true;
+                return new GDriveStorage();
+            }
+            return Storage.instance();
+        } catch (DriverNotRegisteredException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
     public Archiver getArchiver() {
         return new GDriveArchiver();
+    }
+
+    @Override
+    public Directory getDirectory(String name) {
+        return new GDriveDirectory(name);
+    }
+
+    @Override
+    public File getFile(String name) {
+        return new GDriveFile(name);
     }
 }

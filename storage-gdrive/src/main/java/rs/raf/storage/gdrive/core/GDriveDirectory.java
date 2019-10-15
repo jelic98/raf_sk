@@ -4,23 +4,27 @@ import rs.raf.storage.spec.core.Directory;
 
 public class GDriveDirectory extends Directory {
 
+    public GDriveDirectory(String name) {
+        super(name);
+    }
+
     @Override
-    public void delete() {
+    protected void onDelete() {
 
     }
 
     @Override
-    public void copy(Directory directory) {
+    protected void onCopy(Directory directory) {
 
     }
 
     @Override
-    public void move(Directory directory) {
+    protected void onUpload(Directory directory) {
 
     }
 
     @Override
-    public void upload(Directory directory) {
+    protected void onDownload(String s) {
 
     }
 }
