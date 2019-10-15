@@ -2,7 +2,6 @@ package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.auth.Authorizer;
-import rs.raf.storage.spec.exception.ForbiddenTypeException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
 import java.util.List;
@@ -21,6 +20,8 @@ public abstract class File {
 
     public File(String name) {
         this.name = name;
+
+        metadata = new Metadata();
     }
 
     public void delete() throws StorageException {
@@ -35,16 +36,6 @@ public abstract class File {
         onCopy(destination);
     }
 
-    public void upload(Directory destination) throws StorageException {
-        if(Storage.instance().getForbiddenTypes().contains(getType())) {
-            throw new ForbiddenTypeException(this);
-        }
-
-        authorizer.checkWrite(Storage.instance().getActiveUser(), destination);
-
-        onUpload(destination);
-    }
-
     public void download(String path) throws StorageException {
         authorizer.checkRead(Storage.instance().getActiveUser(), this);
 
@@ -53,7 +44,6 @@ public abstract class File {
 
     protected abstract void onDelete() throws StorageException;
     protected abstract void onCopy(Directory destination) throws StorageException;
-    protected abstract void onUpload(Directory destination) throws StorageException;
     protected abstract void onDownload(String path) throws StorageException;
 
     public void extract(List<File> files) {
@@ -63,10 +53,6 @@ public abstract class File {
     public final void move(Directory destination) throws StorageException {
         this.copy(destination);
         this.delete();
-    }
-
-    public final String getType() {
-        return name.contains(".") ? name.substring(name.lastIndexOf('.') + 1) : "";
     }
 
     public final String getPath() {

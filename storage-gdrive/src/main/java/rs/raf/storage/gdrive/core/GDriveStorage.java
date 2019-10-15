@@ -13,7 +13,6 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.Storage;
-
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Collections;
@@ -22,25 +21,23 @@ public class GDriveStorage extends Storage {
 
     private static final String CREDENTIALS_PATH = "/credentials.json";
 
-    private static Drive drive;
-    private static HttpTransport transport;
+    static Drive drive;
+    static HttpTransport transport;
 
     @Override
     protected void onConnect() {
-        JacksonFactory factory = JacksonFactory.getDefaultInstance();
         try {
-            GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(factory,
-                    new InputStreamReader(getClass().getResourceAsStream(CREDENTIALS_PATH)));
+            JacksonFactory factory = JacksonFactory.getDefaultInstance();
 
-            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                    transport, factory, clientSecrets,
-                    Collections.singleton(DriveScopes.DRIVE_FILE))
+            Credential credential = new AuthorizationCodeInstalledApp(new GoogleAuthorizationCodeFlow
+                    .Builder(transport = GoogleNetHttpTransport.newTrustedTransport(),
+                        factory,
+                        GoogleClientSecrets.load(factory,
+                                new InputStreamReader(GDriveStorage.class.getResourceAsStream(CREDENTIALS_PATH))),
+                        Collections.singleton(DriveScopes.DRIVE_FILE))
                     .setDataStoreFactory(new FileDataStoreFactory(new File(getRootPath())))
-                    .build();
+                    .build(), new LocalServerReceiver()).authorize("user");
 
-            transport = GoogleNetHttpTransport.newTrustedTransport();
-
-            Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
             drive = new Drive.Builder(transport, factory, credential).setApplicationName(getClass().getSimpleName()).build();
         }catch(Exception e) {
             e.printStackTrace();
@@ -53,7 +50,7 @@ public class GDriveStorage extends Storage {
     }
 
     @Override
-    protected Directory buildRoot(String s) {
-        return null;
+    protected Directory buildRoot(String path) {
+        return new GDriveDirectory("");
     }
 }

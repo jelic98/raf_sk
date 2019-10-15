@@ -1,13 +1,23 @@
 package rs.raf.storage.spec.core;
 
+import rs.raf.storage.spec.StorageDriverManager;
+import rs.raf.storage.spec.auth.Authorizer;
+import rs.raf.storage.spec.exception.ForbiddenTypeException;
 import rs.raf.storage.spec.exception.StorageException;
+import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Directory extends File {
 
+    private static final Authorizer authorizer;
+
     private List<File> children;
+
+    static {
+        authorizer = new Authorizer();
+    }
 
     public Directory(String name) {
         super(name);
@@ -34,15 +44,6 @@ public abstract class Directory extends File {
     }
 
     @Override
-    public void upload(Directory destination) throws StorageException {
-        super.upload(destination);
-
-        for(File child : getChildren()) {
-            child.upload(destination);
-        }
-    }
-
-    @Override
     public void download(String path) throws StorageException {
         super.download(path);
 
@@ -60,12 +61,25 @@ public abstract class Directory extends File {
         }
     }
 
-    public final void upload(List<File> files) throws StorageException {
-        children.addAll(files);
+    public void upload(String path) throws StorageException {
+        authorizer.checkWrite(Storage.instance().getActiveUser(), this);
 
-        for(File file : files) {
-            file.setParent(this);
-            file.upload(this);
+        String name = extractName(path);
+        String type = extractType(name);
+
+        if(Storage.instance().getForbiddenTypes().contains(type)) {
+            throw new ForbiddenTypeException(this);
+        }
+
+        File file = StorageDriverManager.getDriver().getFile(name);
+        file.setParent(this);
+
+        children.add(file);
+    }
+
+    public final void upload(String[] paths) throws StorageException {
+        for(String path : paths) {
+            upload(path);
         }
     }
 
@@ -83,5 +97,15 @@ public abstract class Directory extends File {
 
     public final List<File> getChildren() {
         return new LinkedList<>(children);
+    }
+
+    private String extractName(String path) throws StorageException {
+        path = new Path(path, Storage.instance()).reverseBuild();
+
+        return path.contains(Res.Wildcard.SEPARATOR) ? path.substring(path.lastIndexOf(Res.Wildcard.SEPARATOR) + Res.Wildcard.SEPARATOR.length()) : path;
+    }
+
+    private String extractType(String name) {
+        return name.contains(".") ? name.substring(name.lastIndexOf('.') + 1) : "";
     }
 }

@@ -43,4 +43,10 @@ public final class Path {
                 .replace(Res.Wildcard.SEPARATOR, FileSystems.getDefault().getSeparator())
                 .replace(Res.Wildcard.HOME, System.getProperty("user.home"));
     }
+
+    public String reverseBuild() {
+        return path
+                .replace(FileSystems.getDefault().getSeparator(), Res.Wildcard.SEPARATOR)
+                .replace(System.getProperty("user.home"), Res.Wildcard.HOME);
+    }
 }
