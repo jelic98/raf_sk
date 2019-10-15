@@ -1,10 +1,14 @@
 package rs.raf.storage.app;
 
 import com.konzole.framework.*;
+
+import jdk.nashorn.internal.ir.CatchNode;
 import rs.raf.storage.spec.StorageDriver;
 import rs.raf.storage.spec.StorageDriverManager;
+import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.*;
+import rs.raf.storage.spec.exception.NonExistenceException;
 import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.search.Criteria;
 import rs.raf.storage.spec.search.CriteriaType;
@@ -112,25 +116,59 @@ public class App {
                         }
                     }
                             .addInput(new Input("Username")))
+                    .addOption(new ExecuteOption("Grant privilige for user") {
+						@Override
+						public void execute() {
+							String username = getInput("username").getValue();
+							String path = getInput("file path").getValue();
+							boolean read = Boolean.parseBoolean(getInput("read privilege").getValue());
+							boolean write = Boolean.parseBoolean(getInput("write privilege").getValue());
+							boolean delete = Boolean.parseBoolean(getInput("delete privilege").getValue());
+							
+							File source;
+							
+							try {
+								source = new Path(path, storage).resolve();
+								
+								for(User u : storage.getUsers()) {
+									if(u.getName().equals(username)) {
+										u.addPrivilege(new Privilege(source, read, write, delete));
+									}
+								}
+							} catch (ClassCastException e) {
+                                log("Directory not selected");
+                                return;
+                            } catch (NonExistenceException e) {
+								log("File does not exist");
+                            } catch (StorageException e) {
+                                log(e);
+                            }
+						}
+					}
+                    		.addInput(new Input("Username"))
+                    		.addInput(new Input("File path"))
+                    		.addInput(new Input("Read Privilege"))
+                    		.addInput(new Input("Write privilege"))
+                    		.addInput(new Input("Delete privilege")))
                     .addOption(new ExecuteOption("Upload single file") {
                         @Override
                         public void execute() {
-                            String sourcePath = getInput("source").getValue();
+                            String sourcePath = getInput("file").getValue();
                             String destinationPath = getInput("destination").getValue();
 
-                            File source = new Path(sourcePath).resolve();
+                            File source;
 
                             Directory destination;
 
                             try {
-                                destination = (Directory) new Path(destinationPath).resolve();
+                            	source  = new Path(sourcePath, storage).resolve();
+                                destination = (Directory) new Path(destinationPath, storage).resolve();
+                                source.upload(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
-                            }
-
-                            try {
-                                source.upload(destination);
+                            } catch (NonExistenceException e) {
+								log("File does not exist");
                             } catch (StorageException e) {
                                 log(e);
                             }
@@ -147,11 +185,14 @@ public class App {
                             String sourcePath = getInput("source").getValue();
                             String destination = getInput("destination").getValue();
 
-                            File source = new Path(sourcePath).resolve();
+                            File source;
 
                             try {
+                            	source  = new Path(sourcePath, storage).resolve();
                                 source.download(destination);
-                            } catch (StorageException e) {
+                            } catch(NonExistenceException e) {
+                            	log("File does not exist");
+                            }catch (StorageException e) {
                                 log(e);
                             }
 
@@ -165,18 +206,18 @@ public class App {
                             String sourcePath = getInput("source").getValue();
                             String destinationPath = getInput("destination").getValue();
 
-                            File source = new Path(sourcePath).resolve();
+                            File source;
                             Directory destination;
 
                             try {
-                                destination = (Directory) new Path(destinationPath).resolve();
+                            	source = new Path(sourcePath, storage).resolve();
+                                destination = (Directory) new Path(destinationPath, storage).resolve();
+                                source.copy(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
-                            }
-
-                            try {
-                                source.copy(destination);
+                            } catch(NonExistenceException e) {
+                            	log("File does not exist");
                             } catch (StorageException e) {
                                 log(e);
                             }
@@ -191,20 +232,20 @@ public class App {
                             String sourcePath = getInput("source").getValue();
                             String destinationPath = getInput("destination").getValue();
 
-                            File source = new Path(sourcePath).resolve();
+                            File source;
                             Directory destination;
 
                             try {
-                                destination = (Directory) new Path(destinationPath).resolve();
+                            	source = new Path(sourcePath, storage).resolve();
+                                destination = (Directory) new Path(destinationPath, storage).resolve();
+                                source.copy(destination);
+                            } catch(NonExistenceException e) {
+                            	log("File does not exist");
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
-                            }
-
-                            try {
-                                source.copy(destination);
                             } catch (StorageException e) {
-                                log(e);
+								log(e);
                             }
 
                             log("Moved successfully");
@@ -216,10 +257,13 @@ public class App {
                         public void execute() {
                             String path = getInput("file").getValue();
 
-                            File file = new Path(path).resolve();
+                            File file;
 
                             try {
+                            	file = new Path(path, storage).resolve();
                                 file.delete();
+                            } catch(NonExistenceException e) {
+                            	log("File does not exist");
                             } catch (StorageException e) {
                                 log(e);
                             }
@@ -230,7 +274,13 @@ public class App {
                         public void execute() {
                             String path = getInput("file").getValue();
 
-                            File file = new Path(path).resolve();
+                            File file = null;
+							try {
+								file = new Path(path, storage).resolve();
+							} catch(NonExistenceException e) {
+                            	log("File does not exist");
+                            }
+							
                             Metadata metadata = file.getMetadata();
 
                             for (String key : metadata.getKeys()) {
@@ -248,7 +298,12 @@ public class App {
                             String key = getInput("key").getValue();
                             String value = getInput("value").getValue();
 
-                            File file = new Path(path).resolve();
+                            File file = null;
+							try {
+								file = new Path(path, storage).resolve();
+							} catch(NonExistenceException e) {
+                            	log("File does not exist");
+                            }
                             Metadata metadata = file.getMetadata();
                             metadata.add(key, value);
 
@@ -263,10 +318,12 @@ public class App {
                         public void execute() {
                             String path = getInput("directory").getValue();
 
-                            Directory directory;
+                            Directory directory = null;
 
                             try {
-                                directory = (Directory) new Path(path).resolve();
+                                directory = (Directory) new Path(path, storage).resolve();
+                            } catch(NonExistenceException e) {
+                            	log("File does not exist");
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
@@ -295,10 +352,12 @@ public class App {
                                             String path = getInput("directory").getValue();
                                             String query = getInput("query").getValue();
 
-                                            Directory directory;
+                                            Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path).resolve();
+                                                directory = (Directory) new Path(path, storage).resolve();
+                                            } catch(NonExistenceException e) {
+                                            	log("File does not exist");
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
@@ -324,10 +383,12 @@ public class App {
                                             String path = getInput("directory").getValue();
                                             String query = getInput("query").getValue();
 
-                                            Directory directory;
+                                            Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path).resolve();
+                                                directory = (Directory) new Path(path, storage).resolve();
+                                            } catch(NonExistenceException e) {
+                                            	log("File does not exist");
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
@@ -353,10 +414,12 @@ public class App {
                                             String path = getInput("directory").getValue();
                                             String query = getInput("query").getValue();
 
-                                            Directory directory;
+                                            Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path).resolve();
+                                                directory = (Directory) new Path(path, storage).resolve();
+                                            } catch(NonExistenceException e) {
+                                            	log("File does not exist");
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
@@ -382,10 +445,12 @@ public class App {
                                             String path = getInput("directory").getValue();
                                             String query = getInput("query").getValue();
 
-                                            Directory directory;
+                                            Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path).resolve();
+                                                directory = (Directory) new Path(path, storage).resolve();
+                                            } catch(NonExistenceException e) {
+                                            	log("File does not exist");
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;

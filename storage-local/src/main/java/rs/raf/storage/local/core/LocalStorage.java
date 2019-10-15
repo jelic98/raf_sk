@@ -22,7 +22,7 @@ public class LocalStorage extends Storage {
 
 	@Override
 	protected Directory buildRoot(String path) {
-		return null;
+		return new LocalDirectory("root");
 	}
 	
 }
