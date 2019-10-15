@@ -58,7 +58,7 @@ public class App {
             Class.forName("rs.raf.storage.local.LocalStorageDriver");
 
             driver = StorageDriverManager.getDriver();
-            storage = driver.getStorage();
+            storage = Storage.instance();
             callback = new LifecycleCallbackAdapter() {
                 @Override
                 public void onExit() {
@@ -182,7 +182,7 @@ public class App {
 
                             try {
                                 source = driver.getFile(sourcePath);
-                                destination = (Directory) new Path(destinationPath, storage).resolve();
+                                destination = (Directory) new Path("\\" + destinationPath, storage).resolve();
                                 source.upload(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");

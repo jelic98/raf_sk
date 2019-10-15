@@ -43,9 +43,10 @@ public abstract class Storage {
 
         return instance;
     }
-
+    
     private static synchronized void synchronize() throws DriverNotRegisteredException {
         if(instance == null) {
+        	
             instance = StorageDriverManager.getDriver().getStorage();
         }
     }

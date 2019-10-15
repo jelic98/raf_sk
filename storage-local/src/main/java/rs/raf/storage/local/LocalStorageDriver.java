@@ -11,6 +11,7 @@ import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
+import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 
 public class LocalStorageDriver extends StorageDriver {
 
@@ -25,10 +26,21 @@ public class LocalStorageDriver extends StorageDriver {
     private LocalStorageDriver(String name) {
         super(name);
     }
+    
+    private static boolean instantiated = false;
 
     @Override
     public Storage getStorage() {
-        return new LocalStorage();
+    	
+        try {
+        	if(!instantiated) {
+        		return new LocalStorage();
+        	}
+			return Storage.instance();
+		} catch (DriverNotRegisteredException e) {
+			e.printStackTrace();
+			return null;
+		}
     }
 
     @Override
