@@ -14,13 +14,17 @@ import java.util.List;
 
 public class App {
 
-    public static void main(String[] args) {
-        try {
-            StorageStructure structure = new StorageStructure();
+    private StorageStructure structure;
 
-            new Lifecycle(new StorageStructure(), structure.getCallback()).run();
+    public static void main(String[] args) {
+        App app = new App();
+
+        try {
+            app.structure = new StorageStructure(app);
+
+            new Lifecycle(app.structure, app.structure.getCallback()).run();
         } catch (Exception e) {
-            log(e);
+            app.log(e);
         }
     }
 
@@ -28,8 +32,15 @@ public class App {
         System.out.println(message);
     }
 
-    private static void log(Exception e) {
+    private void log(Exception e) {
         System.err.println(e.getMessage());
+
+        try {
+            structure.getStorage().disconnect(structure.getUser());
+        }catch(StorageException e1) {
+            e1.printStackTrace();
+        }
+
         System.exit(0);
     }
 
@@ -39,8 +50,11 @@ public class App {
         private StorageDriver driver;
         private Storage storage;
         private User user;
+        private App app;
 
-        public StorageStructure() throws Exception {
+        public StorageStructure(App app) throws Exception {
+            this.app = app;
+
             Class.forName("rs.raf.storage.local.LocalStorageDriver");
 
             driver = StorageDriverManager.getDriver();
@@ -51,7 +65,7 @@ public class App {
                     try {
                         storage.disconnect(user);
                     }catch(StorageException e) {
-                        log(e);
+                        app.log(e);
                     }
                 }
             };
@@ -73,7 +87,7 @@ public class App {
                             try {
                                 storage.connect(uid, path, user);
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
 
                             log("Connected successfully");
@@ -89,7 +103,7 @@ public class App {
                             try {
                                 storage.disconnect(user);
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
 
                             user = null;
@@ -106,7 +120,7 @@ public class App {
                             try {
                                 storage.addUser(new User(username, password));
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
                         }
                     }
@@ -120,7 +134,7 @@ public class App {
                             try {
                                 storage.removeUser(new User(username, null));
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
                         }
                     }
@@ -137,7 +151,7 @@ public class App {
 							File source;
 							
 							try {
-								source = new Path(path, storage).resolve();
+                                source = driver.getFile(path);
 								
 								for(User u : storage.getUsers()) {
 									if(u.getName().equals(username)) {
@@ -147,8 +161,6 @@ public class App {
 							} catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
-                            } catch (StorageException e) {
-                                log(e);
                             }
 
                             log("Privilege set successfully");
@@ -166,18 +178,17 @@ public class App {
                             String destinationPath = getInput("destination").getValue();
 
                             File source;
-
                             Directory destination;
 
                             try {
-                            	source  = new Path(sourcePath, storage).resolve();
+                                source = driver.getFile(sourcePath);
                                 destination = (Directory) new Path(destinationPath, storage).resolve();
                                 source.upload(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
 
                             log("Uploaded successfully");
@@ -192,13 +203,15 @@ public class App {
                             String sourcePath = getInput("source").getValue();
                             String destination = getInput("destination").getValue();
 
+                            // TODO Add input Total files and iterate
+
                             File source;
 
                             try {
-                            	source  = new Path(sourcePath, storage).resolve();
+                                source = driver.getFile(sourcePath);
                                 source.download(destination);
                             }catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
 
                             log("Downloaded successfully");
@@ -215,14 +228,14 @@ public class App {
                             Directory destination;
 
                             try {
-                            	source = new Path(sourcePath, storage).resolve();
+                                source = driver.getFile(sourcePath);
                                 destination = (Directory) new Path(destinationPath, storage).resolve();
                                 source.copy(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
 
                             log("Copied successfully");
@@ -239,14 +252,14 @@ public class App {
                             Directory destination;
 
                             try {
-                            	source = new Path(sourcePath, storage).resolve();
+                                source = driver.getFile(sourcePath);
                                 destination = (Directory) new Path(destinationPath, storage).resolve();
                                 source.copy(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
                             } catch (StorageException e) {
-								log(e);
+								app.log(e);
                             }
 
                             log("Moved successfully");
@@ -264,7 +277,7 @@ public class App {
                             	file = new Path(path, storage).resolve();
                                 file.delete();
                             } catch (StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
                         }
                     }.addInput(new Input("File")))
@@ -277,7 +290,7 @@ public class App {
 							try {
 								file = new Path(path, storage).resolve();
 							} catch(StorageException e) {
-                            	log(e);
+                            	app.log(e);
                             }
 							
                             Metadata metadata = file.getMetadata();
@@ -301,7 +314,7 @@ public class App {
 							try {
 								file = new Path(path, storage).resolve();
 							} catch(StorageException e) {
-                            	log(e);
+                            	app.log(e);
                             }
                             Metadata metadata = file.getMetadata();
                             metadata.add(key, value);
@@ -325,7 +338,7 @@ public class App {
                                 log("Directory not selected");
                                 return;
                             } catch(StorageException e) {
-                                log(e);
+                                app.log(e);
                             }
 
                             List<File> children = directory.getChildren();
@@ -359,7 +372,7 @@ public class App {
                                                 log("Directory not selected");
                                                 return;
                                             } catch(NonExistenceException e) {
-                                                log(e);
+                                                app.log(e);
                                             }
 
                                             List<File> matches = directory.search(new Criteria(type, query));
@@ -390,7 +403,7 @@ public class App {
                                                 log("Directory not selected");
                                                 return;
                                             } catch(NonExistenceException e) {
-                                                log(e);
+                                                app.log(e);
                                             }
 
                                             List<File> matches = directory.search(new Criteria(type, query));
@@ -421,7 +434,7 @@ public class App {
                                                 log("Directory not selected");
                                                 return;
                                             } catch(NonExistenceException e) {
-                                                log(e);
+                                                app.log(e);
                                             }
 
                                             List<File> matches = directory.search(new Criteria(type, query));
@@ -452,7 +465,7 @@ public class App {
                                                 log("Directory not selected");
                                                 return;
                                             } catch(NonExistenceException e) {
-                                                log(e);
+                                                app.log(e);
                                             }
 
                                             List<File> matches = directory.search(new Criteria(type, query));
@@ -470,6 +483,14 @@ public class App {
                             )
                             .addInput(new Input("Directory"))
                             .addInput(new Input("Query")));
+        }
+
+        private Storage getStorage() {
+            return storage;
+        }
+
+        private User getUser() {
+            return user;
         }
 
         private LifecycleCallback getCallback() {
