@@ -34,6 +34,7 @@ public class LocalStorageDriver extends StorageDriver {
     	
         try {
         	if(!instantiated) {
+        		instantiated = true;
         		return new LocalStorage();
         	}
 			return Storage.instance();
