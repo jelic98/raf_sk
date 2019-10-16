@@ -182,13 +182,11 @@ public class App {
                             String sourcePath = getInput("file").getValue();
                             String destinationPath = getInput("destination").getValue();
 
-                            File source;
                             Directory destination;
-
+                            
                             try {
-                                source = driver.getFile(sourcePath);
                                 destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
-                                source.upload(destination);
+                                destination.upload(sourcePath);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
@@ -215,7 +213,7 @@ public class App {
 
                             try {
                                 Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
-                                destination.upload(files);
+                               // destination.upload(files);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
@@ -294,8 +292,8 @@ public class App {
                         }
                     }.addInput(new Input("Source"))
                             .addInput(new Input("Destination")))
-                    .addOption(new ExecuteOption("Delete file") {
-                        @Override
+                    .addOption(new ExecuteOption("Delete file") {//mora da se unese dupli separator jer tako izadje iz 
+                        @Override								//getPath(), zato sto root ima ime ""
                         public void execute() {
                             String path = getInput("file").getValue();
 

@@ -21,7 +21,7 @@ public class LocalStorage extends Storage {
 		File file = new File(path);
 		file.mkdirs();
 
-		return new LocalDirectory(".");
+		return new LocalDirectory("");
 	}
 	
 }

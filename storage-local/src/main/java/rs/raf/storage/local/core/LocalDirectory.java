@@ -9,7 +9,7 @@ import rs.raf.storage.spec.exception.StorageException;
 
 public class LocalDirectory extends Directory {
 
-    public LocalDirectory(String name) {
+	public LocalDirectory(String name) {
 		super(name);
 	}
 
@@ -31,16 +31,17 @@ public class LocalDirectory extends Directory {
 	}
 
 	@Override
-	protected void onUpload(Directory destination) throws StorageException {
-		onCopy(destination);
-	}
-
-	@Override
 	protected void onDownload(String path) throws StorageException {
 		try {
 			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			throw new StorageException(e.getMessage());
 		}
+	}
+
+    @Override
+	protected void onUpload(String path, Directory destination) throws StorageException {
+		// TODO Auto-generated method stub
+		
 	}
 }
