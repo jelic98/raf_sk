@@ -1,6 +1,7 @@
 package rs.raf.storage.spec.core;
 
 import rs.raf.storage.spec.exception.NonExistenceException;
+import rs.raf.storage.spec.exception.StorageException;
 import rs.raf.storage.spec.res.Res;
 import java.nio.file.FileSystems;
 import java.util.LinkedList;
@@ -48,5 +49,15 @@ public final class Path {
         return path
                 .replace(FileSystems.getDefault().getSeparator(), Res.Wildcard.SEPARATOR)
                 .replace(System.getProperty("user.home"), Res.Wildcard.HOME);
+    }
+
+    public String extractName() throws StorageException {
+        path = new Path(path, Storage.instance()).reverseBuild();
+
+        return path.contains(Res.Wildcard.SEPARATOR) ? path.substring(path.lastIndexOf(Res.Wildcard.SEPARATOR) + Res.Wildcard.SEPARATOR.length()) : path;
+    }
+
+    public String extractType() {
+        return path.contains(".") ? path.substring(path.lastIndexOf('.') + 1) : "";
     }
 }

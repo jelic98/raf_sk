@@ -46,7 +46,7 @@ public class GDriveStorage extends Storage {
 
     @Override
     protected void onDisconnect() {
-
+        new File("StoredCredential").delete();
     }
 
     @Override

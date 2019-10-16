@@ -64,8 +64,8 @@ public abstract class Directory extends File {
     public void upload(String path) throws StorageException {
         authorizer.checkWrite(Storage.instance().getActiveUser(), this);
 
-        String name = extractName(path);
-        String type = extractType(name);
+        String name = new Path(path, Storage.instance()).extractName();
+        String type = new Path(path, Storage.instance()).extractType();
 
         if(Storage.instance().getForbiddenTypes().contains(type)) {
             throw new ForbiddenTypeException(this);
@@ -98,15 +98,5 @@ public abstract class Directory extends File {
 
     public final List<File> getChildren() {
         return new LinkedList<>(children);
-    }
-
-    private String extractName(String path) throws StorageException {
-        path = new Path(path, Storage.instance()).reverseBuild();
-
-        return path.contains(Res.Wildcard.SEPARATOR) ? path.substring(path.lastIndexOf(Res.Wildcard.SEPARATOR) + Res.Wildcard.SEPARATOR.length()) : path;
-    }
-
-    private String extractType(String name) {
-        return name.contains(".") ? name.substring(name.lastIndexOf('.') + 1) : "";
     }
 }
