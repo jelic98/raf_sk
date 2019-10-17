@@ -8,6 +8,14 @@ import java.util.List;
 
 public final class FileMaker {
 
+    /**
+     * Creates multiple files by appending numbers in range to the {@code baseName}.
+     * @param baseName Name that will be at the beginning of every file name.
+     * @param rangeBegin Numbers that will be appended to the {@code baseName} will start from this value.
+     * @param rangeEnd Numbers that will be appended to the {@code baseName} will end on this value.
+     * @return List of newly created files.
+     * @throws DriverNotRegisteredException
+     */
     public final List<File> makeRange(String baseName, int rangeBegin, int rangeEnd)
             throws DriverNotRegisteredException {
         List<File> files = new LinkedList<>();

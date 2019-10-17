@@ -5,10 +5,17 @@ import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Storage;
 
+/**
+ * Abstract factory for creating storage entities.
+ */
 public abstract class StorageDriver {
 
     private String name;
 
+    /**
+     * One and only contructor that accepts just storage driver name.
+     * @param name Storage driver name.
+     */
     protected StorageDriver(String name) {
         this.name = name;
     }

@@ -10,6 +10,11 @@ public final class User {
     private List<Privilege> privileges;
     private boolean saved;
 
+    /**
+     * One and only constructor that accepts file and flags.
+     * @param name User name.
+     * @param password User password. Hashing is applied before serialization.
+     */
     public User(String name, String password) {
         this.name = name;
         this.password = password;
@@ -26,11 +31,20 @@ public final class User {
         return password;
     }
 
+    /**
+     * Adds new privilege to the list. Used for granting and revoking file access.
+     * @param privilege New user privilege.
+     */
     public void addPrivilege(Privilege privilege) {
         privileges.remove(privilege);
         privileges.add(privilege);
     }
 
+    /**
+     * Returns requested privilege or creates a default one which is granting all access.
+     * @param file File for which privilege will be returned.
+     * @return Requested privilege or default one.
+     */
     public Privilege getPrivilege(File file) {
         for(Privilege privilege : privileges) {
             if(privilege.getFile().equals(file)) {

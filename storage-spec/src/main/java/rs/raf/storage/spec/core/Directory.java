@@ -4,11 +4,13 @@ import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.auth.Authorizer;
 import rs.raf.storage.spec.exception.ForbiddenTypeException;
 import rs.raf.storage.spec.exception.StorageException;
-import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Abstract representation of directory.
+ */
 public abstract class Directory extends File {
 
     private static final Authorizer authorizer;
@@ -61,6 +63,11 @@ public abstract class Directory extends File {
         }
     }
 
+    /**
+     * Uploads single file from provided {@code path} to directory.
+     * @param path Path of file to be uploaded.
+     * @throws StorageException if used does not have privileges or file type is forbidden.
+     */
     public void upload(String path) throws StorageException {
         authorizer.checkWrite(Storage.instance().getActiveUser(), this);
 
@@ -78,12 +85,23 @@ public abstract class Directory extends File {
         children.add(file);
     }
 
+    /**
+     * Uploads multiple files from provided array of {@code paths} to directory.
+     * @param paths Paths array of files to be uploaded.
+     * @throws StorageException if used does not have privileges or file types are forbidden.
+     */
     public final void upload(String[] paths) throws StorageException {
         for(String path : paths) {
             upload(path);
         }
     }
 
+    /**
+     * Searches directory for files that match provided criteria.
+     *      Note that this method performs only one level search and does not recurse.
+     * @param criteria Searched criteria which holds search type and search query.
+     * @return List of file that matches search criteria.
+     */
     public final List<File> search(Criteria criteria) {
         List<File> files = new LinkedList<>();
 

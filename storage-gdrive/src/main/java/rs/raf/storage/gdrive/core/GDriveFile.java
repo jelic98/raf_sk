@@ -20,8 +20,7 @@ public class GDriveFile extends File {
     @Override
     protected void onDelete() throws StorageException {
         try {
-            GDriveStorage.drive.files().delete(GDriveUtils.getFileFromPath(
-                    this, new Path(getPath(), Storage.instance()).extractName()).getId()).execute();
+            GDriveStorage.drive.files().delete(GDriveUtils.getFileFromPath(this).getId()).execute();
         }catch(Exception e) {
             throw new StorageException(e.getMessage());
         }
@@ -75,10 +74,9 @@ public class GDriveFile extends File {
     @Override
     protected void onDownload(String path) throws StorageException {
         try {
-            String name = new Path(getPath(), Storage.instance()).extractName();
-
-            GDriveStorage.drive.files().get(GDriveUtils.getFileFromPath(this, name).getId())
-                    .executeMediaAndDownloadTo(new FileOutputStream(new java.io.File(path, name)));
+            GDriveStorage.drive.files().get(GDriveUtils.getFileFromPath(this).getId())
+                    .executeMediaAndDownloadTo(new FileOutputStream(new java.io.File(path,
+                            new Path(getPath(), Storage.instance()).extractName())));
         }catch(Exception e) {
             throw new StorageException(e.getMessage());
         }

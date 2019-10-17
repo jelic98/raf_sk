@@ -1,7 +1,13 @@
 package rs.raf.storage.spec.res;
 
+/**
+ * Isolates strings from runnable code and makes library as well as application more portable.
+ */
 public final class Res {
 
+    /**
+     * Strings related to registry file.
+     */
     public static final class Registry {
         public final static String KEY_OWNER = "owner";
         public final static String KEY_USERS = "users";
@@ -20,6 +26,9 @@ public final class Res {
                 Wildcard.SEPARATOR);
     }
 
+    /**
+     * String wildcards that allow cross platform path usage.
+     */
     public static final class Wildcard {
         public static final String SEPARATOR = "${separator}";
         public static final String HOME = "${home}";
@@ -29,6 +38,9 @@ public final class Res {
         public static final String DRIVER = "${driver}";
     }
 
+    /**
+     * Error messages.
+     */
     public static final class Error {
         public static final String USER_PRIVILEGE = String.format(
                 "User %s is not authorized to perform the specified operation",

@@ -7,6 +7,13 @@ public final class Privilege {
     private File file;
     private boolean read, write, delete;
 
+    /**
+     * One and only constructor that accepts file and flags.
+     * @param file File onto which this privilege will be applied.
+     * @param read Read flag. Has value of {@code true} if user can read provided file.
+     * @param write Write flag. Has value of {@code true} if user can write provided file.
+     * @param delete Delete flag. Has value of {@code true} if user can delete provided file.
+     */
     public Privilege(File file, boolean read, boolean write, boolean delete) {
         this.file = file;
         this.read = read;

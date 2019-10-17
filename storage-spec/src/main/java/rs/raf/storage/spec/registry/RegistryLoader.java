@@ -6,7 +6,6 @@ import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Metadata;
-import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;

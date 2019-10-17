@@ -3,6 +3,9 @@ package rs.raf.storage.spec.exception;
 import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.core.File;
 
+/**
+ * Notifies the caller that requested operation cannot be done because specified file does not exist.
+ */
 public final class NonExistenceException extends StorageException {
 
     public NonExistenceException(String path) {

@@ -21,8 +21,8 @@ public class Main {
 //            Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR, storage).resolve();
 //            destination.upload("/Users/Lazar/Downloads/test.txt");
 //
-//            File test = StorageDriverManager.getDriver().getFile("test/asd.txt");
-//            test.download("/Users/Lazar/Downloads");
+            File test = StorageDriverManager.getDriver().getFile("test/asd.txt");
+            test.download("/Users/Lazar/Downloads");
 //            test.copy(destination);
 //            test.delete();
 
@@ -30,7 +30,7 @@ public class Main {
 //            Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR, storage).resolve();
 //            destination.upload("/Users/Lazar/Downloads/folder");
 
-//            Directory directory = StorageDriverManager.getDriver().getDirectory("folder/asd");
+//            Directory directory = StorageDriverManager.getDriver().getDirectory("folder");
 //            directory.download("/Users/Lazar/Downloads");
 //            directory.copy(destination);
 //            directory.delete();
