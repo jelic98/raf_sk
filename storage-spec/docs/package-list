@@ -1,0 +1,9 @@
+rs.raf.storage.spec
+rs.raf.storage.spec.archive
+rs.raf.storage.spec.auth
+rs.raf.storage.spec.core
+rs.raf.storage.spec.exception
+rs.raf.storage.spec.maker
+rs.raf.storage.spec.registry
+rs.raf.storage.spec.res
+rs.raf.storage.spec.search
