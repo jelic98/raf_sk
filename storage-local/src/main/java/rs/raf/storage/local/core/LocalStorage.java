@@ -1,8 +1,14 @@
 package rs.raf.storage.local.core;
 
 import rs.raf.storage.spec.core.Directory;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
+import rs.raf.storage.spec.res.Res;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class LocalStorage extends Storage {
 
@@ -20,8 +26,16 @@ public class LocalStorage extends Storage {
 	protected Directory buildRoot(String path) {
 		File file = new File(path);
 		file.mkdirs();
-
+		
 		return new LocalDirectory("");
+	}
+	
+	public static void makeDirs(String path) {
+		String separator = new Path(Res.Wildcard.SEPARATOR, null).build();
+		path = path.contains(separator) ? path.substring(0, path.indexOf(separator)) : path;
+		File file = new File(path);
+		
+		file.mkdirs();
 	}
 	
 }

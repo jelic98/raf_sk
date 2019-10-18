@@ -58,6 +58,7 @@ public final class Path {
     public String build() {
         return path
                 .replace(Res.Wildcard.SEPARATOR, FileSystems.getDefault().getSeparator())
+                .replace(FileSystems.getDefault().getSeparator() + FileSystems.getDefault().getSeparator(), FileSystems.getDefault().getSeparator())
                 .replace(Res.Wildcard.HOME, System.getProperty("user.home"));
     }
 

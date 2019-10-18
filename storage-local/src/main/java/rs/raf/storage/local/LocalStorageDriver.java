@@ -1,5 +1,9 @@
 package rs.raf.storage.local;
 
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+
 import rs.raf.storage.local.archive.LocalArchiver;
 import rs.raf.storage.local.core.LocalDirectory;
 import rs.raf.storage.local.core.LocalFile;
@@ -9,9 +13,12 @@ import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.archive.Archiver;
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
+import rs.raf.storage.spec.exception.NonExistenceException;
+import rs.raf.storage.spec.res.Res;
 
 public class LocalStorageDriver extends StorageDriver {
 
@@ -55,6 +62,19 @@ public class LocalStorageDriver extends StorageDriver {
 
 	@Override
 	public File getFile(String name) {
+		String separator = new Path(Res.Wildcard.SEPARATOR, null).build();
+		
+		try {
+			File f = new Path(separator + name, Storage.instance()).resolve();
+			return f;
+		} catch (NonExistenceException e) {
+			
+		} catch (DriverNotRegisteredException e) {
+			
+		}
+		
+		if(name.endsWith(separator))
+			return getDirectory(name);
 		return new LocalFile(name);
 	}
 }

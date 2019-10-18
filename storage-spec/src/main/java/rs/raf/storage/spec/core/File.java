@@ -37,6 +37,7 @@ public abstract class File {
      */
     public void delete() throws StorageException {
         authorizer.checkDelete(Storage.instance().getActiveUser(), this);
+        parent.removeChild(this);
 
         onDelete();
     }
@@ -95,8 +96,8 @@ public abstract class File {
      * @throws StorageException if user does not have required privileges or file does not exist.
      */
     public final void move(Directory destination) throws StorageException {
-        this.copy(destination);
-        this.delete();
+        copy(destination);
+        delete();
     }
 
     /**
@@ -135,7 +136,7 @@ public abstract class File {
         if(initial) {
             return new Path(path.toString(), null).build();
         }else {
-            return path.toString();
+            return new Path(path.toString(), null).build();
         }
     }
     

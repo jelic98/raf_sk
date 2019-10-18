@@ -1,11 +1,14 @@
 package rs.raf.storage.local.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import rs.raf.storage.spec.core.Directory;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.exception.StorageException;
+import rs.raf.storage.spec.res.Res;
 
 public class LocalDirectory extends Directory {
 
@@ -15,7 +18,6 @@ public class LocalDirectory extends Directory {
 
 	@Override
 	protected void onDelete() throws StorageException {
-		this.getParent().getChildren().remove(this);
 		java.io.File dir = new java.io.File(getAbsolutePath(getPath()));
 		dir.delete();
 	}
@@ -23,7 +25,20 @@ public class LocalDirectory extends Directory {
 	@Override
 	protected void onCopy(Directory destination) throws StorageException {
 		try {
-			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(destination.getAbsolutePath(getPath())), StandardCopyOption.REPLACE_EXISTING);
+			String s = getAbsolutePath(getPath());
+			Path sep = new Path(Res.Wildcard.SEPARATOR, null);
+			
+			String separator = sep.build();
+
+			String srcName = this.getName();
+			String dir = destination.getAbsolutePath(destination.getPath());
+			
+			dir = dir + separator + srcName;
+			
+			java.nio.file.Path src = Paths.get(s);
+			java.nio.file.Path dire = Paths.get(dir);
+			
+			Files.copy(src, dire, StandardCopyOption.REPLACE_EXISTING);
 			destination.getChildren().add(this);
 		} catch (IOException e) {
 			throw new StorageException(e.getMessage());
@@ -32,8 +47,24 @@ public class LocalDirectory extends Directory {
 
 	@Override
 	protected void onDownload(String path) throws StorageException {
+		String src = getAbsolutePath(this.getPath());
+		String srcName = getName();
+		
+		Path sep = new Path(Res.Wildcard.SEPARATOR, null);
+		
+		String separator = sep.build();
+		
+		path = path + separator + srcName;
+		
+		java.nio.file.Path srcP = Paths.get(src);
+		java.nio.file.Path dire = Paths.get(path);
+		
 		try {
-			Files.copy(Paths.get(getAbsolutePath(getPath())), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(srcP, dire, StandardCopyOption.REPLACE_EXISTING);
+			File tmp = new File(src);
+			for (File fileEntry : tmp.listFiles()) {
+		        this.download(fileEntry.getAbsolutePath());
+		    }
 		} catch (IOException e) {
 			throw new StorageException(e.getMessage());
 		}
@@ -41,7 +72,25 @@ public class LocalDirectory extends Directory {
 
     @Override
 	protected void onUpload(String path, Directory destination) throws StorageException {
-		// TODO Auto-generated method stub
+    	String srcName = getName();
+		String dir = destination.getAbsolutePath(destination.getPath());
 		
+		Path sep = new Path(Res.Wildcard.SEPARATOR, null);
+		
+		String separator = sep.build();
+		
+		dir = dir + separator + srcName;
+		
+		java.nio.file.Path src = Paths.get(path);
+		java.nio.file.Path dire = Paths.get(dir);
+		
+		try {
+			Files.copy(src, dire, StandardCopyOption.REPLACE_EXISTING);
+			File tmp = new File(path);
+			for (File fileEntry : tmp.listFiles()) {
+		        this.upload(fileEntry.getAbsolutePath());
+		    }
+		} catch (IOException e) {
+		}
 	}
 }

@@ -79,7 +79,7 @@ public class App {
 
         @Override
         protected Question create() {
-            return new Question("What operation to execute?")
+            return new Question("What operation to execute?\n(Directories end with separator)")
                     .addOption(new ExecuteOption("Connect to storage") {
                         @Override
                         public void execute() {
@@ -186,7 +186,7 @@ public class App {
                             Directory destination;
 
                             try {
-                                destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
+                                destination = (Directory) driver.getFile(destinationPath);
                                 destination.upload(sourcePath);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
@@ -203,18 +203,12 @@ public class App {
                     .addOption(new ExecuteOption("Upload multiple files") {
                         @Override
                         public void execute() {
-                            String[] sourcePaths = getInput("sources").getValue().split("\\w");
+                            String[] sourcePaths = getInput("sources").getValue().split(" ");
                             String destinationPath = getInput("destination").getValue();
-
-                            List<File> files = new LinkedList<>();
-
-                            for(String sourcePath : sourcePaths) {
-                                files.add(driver.getFile(sourcePath));
-                            }
 
                             try {
                                 Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
-                               // destination.upload(files);
+                                destination.upload(sourcePaths);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
@@ -256,7 +250,7 @@ public class App {
 
                             try {
                                 source = driver.getFile(sourcePath);
-                                destination = (Directory) new Path(destinationPath, storage).resolve();
+                                destination = (Directory) driver.getFile(destinationPath);
                                 source.copy(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
@@ -280,8 +274,8 @@ public class App {
 
                             try {
                                 source = driver.getFile(sourcePath);
-                                destination = (Directory) new Path(destinationPath, storage).resolve();
-                                source.copy(destination);
+                                destination = (Directory) driver.getFile(destinationPath);
+                                source.move(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
@@ -293,15 +287,15 @@ public class App {
                         }
                     }.addInput(new Input("Source"))
                             .addInput(new Input("Destination")))
-                    .addOption(new ExecuteOption("Delete file") {//mora da se unese dupli separator jer tako izadje iz 
-                        @Override								//getPath(), zato sto root ima ime ""
+                    .addOption(new ExecuteOption("Delete file") { 
+                        @Override								
                         public void execute() {
                             String path = getInput("file").getValue();
 
                             File file;
 
                             try {
-                            	file = new Path(path, storage).resolve();
+                            	file = driver.getFile(path);
                                 file.delete();
                             } catch (StorageException e) {
                                 app.log(e);
@@ -367,7 +361,7 @@ public class App {
                             Directory directory = null;
 
                             try {
-                                directory = (Directory) new Path(path, storage).resolve();
+                                directory = (Directory) new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
@@ -403,7 +397,7 @@ public class App {
                                             Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path, storage).resolve();
+                                                directory = (Directory) new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
@@ -436,7 +430,7 @@ public class App {
                                             Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path, storage).resolve();
+                                                directory = (Directory) new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
@@ -469,7 +463,7 @@ public class App {
                                             Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path, storage).resolve();
+                                                directory = (Directory) new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
@@ -502,7 +496,7 @@ public class App {
                                             Directory directory = null;
 
                                             try {
-                                                directory = (Directory) new Path(path, storage).resolve();
+                                                directory = (Directory) new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
                                             } catch (ClassCastException e) {
                                                 log("Directory not selected");
                                                 return;
