@@ -18,6 +18,7 @@ final class RegistrySaver {
     private JsonParser parser;
     private FileExtractor extractor;
     private Hasher hasher;
+    private boolean registryExists;
 
     RegistrySaver(JsonParser parser, FileExtractor extractor, Hasher hasher) {
         this.parser = parser;
@@ -25,7 +26,9 @@ final class RegistrySaver {
         this.hasher = hasher;
     }
 
-    void save(Storage storage) throws RegistryException {
+    void save(Storage storage, boolean registryExists) throws RegistryException {
+        this.registryExists = registryExists;
+
         saveUsers(storage);
         saveMetadata(storage);
         saveForbiddenTypes(storage);
@@ -35,7 +38,12 @@ final class RegistrySaver {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
         try {
-            JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
+            JSONObject registryJson = new JSONObject();
+
+            if(registryExists) {
+                registryJson = parser.parseJson(storage.getRegistryPath());
+            }
+
             JSONObject usersJson = new JSONObject();
 
             for(User user : storage.getUsers()) {
@@ -54,15 +62,13 @@ final class RegistrySaver {
 
                     Privilege privilege = user.getPrivilege(file);
 
-                    if(privilege != null) {
-                        JSONObject privilegeJson = new JSONObject();
-                        privilegeJson.put(Res.Registry.KEY_FILE, fileHash);
-                        privilegeJson.put(Res.Registry.KEY_READ, privilege.canRead());
-                        privilegeJson.put(Res.Registry.KEY_WRITE, privilege.canWrite());
-                        privilegeJson.put(Res.Registry.KEY_DELETE, privilege.canDelete());
+                    JSONObject privilegeJson = new JSONObject();
+                    privilegeJson.put(Res.Registry.KEY_FILE, fileHash);
+                    privilegeJson.put(Res.Registry.KEY_READ, privilege.canRead());
+                    privilegeJson.put(Res.Registry.KEY_WRITE, privilege.canWrite());
+                    privilegeJson.put(Res.Registry.KEY_DELETE, privilege.canDelete());
 
-                        privilegesJson.put(privilegeJson);
-                    }
+                    privilegesJson.put(privilegeJson);
                 }
 
                 userJson.put(Res.Registry.KEY_PRIVILEGES, privilegesJson);
@@ -111,7 +117,10 @@ final class RegistrySaver {
     private void saveForbiddenTypes(Storage storage) throws RegistryException {
         try {
             JSONArray typesArray = new JSONArray();
-            typesArray.put(storage.getForbiddenTypes());
+
+            for(String type : storage.getForbiddenTypes()) {
+                typesArray.put(type);
+            }
 
             JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             registryJson.remove(Res.Registry.KEY_FORBIDDEN_TYPES);

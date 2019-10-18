@@ -62,7 +62,7 @@ public abstract class Storage {
      * Template method for connecting currently active user to storage
      *      represented by unique id that located on path.
      * @param uid Storage unique identifier.
-     * @param path Storage location, i.e., registry file parent directory.
+     * @param path Storage location
      * @param user Currently active user.
      * @throws StorageException if registry file could not be loaded.
      */
@@ -72,17 +72,12 @@ public abstract class Storage {
         }
 
         this.uid = uid;
-
         root = buildRoot(rootPath = path);
-
         registry.load(user, this);
-
         activeUser = user;
-        
         users.add(user);
 
         if(owner == null) {
-        	
             owner = user;
         }
 
@@ -100,9 +95,7 @@ public abstract class Storage {
         }
 
         uid = null;
-
         registry.save(user, this);
-
         activeUser = null;
 
         onDisconnect();

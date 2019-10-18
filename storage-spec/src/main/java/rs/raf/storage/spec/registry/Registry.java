@@ -55,15 +55,17 @@ public final class Registry {
      * @throws StorageException if authentication did not pass or there was a problem accessing registry file.
      */
     public void save(User user, Storage storage) throws StorageException {
-        if(!registryExists(storage)) {
-            return;
+        boolean exists = registryExists(storage);
+
+        if(!exists) {
+            initializeRegistry(storage);
+        }else {
+            if(!authenticationPassed(user, storage)) {
+                throw new AuthenticationException(user);
+            }
         }
 
-        if(!authenticationPassed(user, storage)) {
-            throw new AuthenticationException(user);
-        }
-
-        saver.save(storage);
+        saver.save(storage, exists);
     }
 
     private boolean authenticationPassed(User user, Storage storage) throws RegistryException {
@@ -77,21 +79,25 @@ public final class Registry {
         }
     }
 
-    private boolean registryExists(Storage storage) throws RegistryException {
+    private void initializeRegistry(Storage storage) throws RegistryException {
         File registryFile = new File(storage.getRegistryPath());
 
-        if(!registryFile.exists()) {
-            registryFile.getParentFile().mkdirs();
-
-            try {
-                registryFile.createNewFile();
-            }catch(IOException e) {
-                throw new RegistryException();
-            }
-
-            return false;
+        if(registryFile.exists()) {
+            return;
         }
 
-        return registryFile.length() > 0;
+        registryFile.getParentFile().mkdirs();
+
+        try {
+            registryFile.createNewFile();
+        }catch(IOException e) {
+            throw new RegistryException();
+        }
+    }
+
+    private boolean registryExists(Storage storage) {
+        File registryFile = new File(storage.getRegistryPath());
+
+        return registryFile.exists() && registryFile.length() > 0;
     }
 }
