@@ -27,8 +27,16 @@ public final class User {
         return name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -53,6 +61,14 @@ public final class User {
         }
 
         return new Privilege(file, true, true, true);
+    }
+
+    List<Privilege> getPrivileges() {
+        return new LinkedList<>(privileges);
+    }
+
+    void setPrivileges(List<Privilege> privileges) {
+        this.privileges = privileges;
     }
 
     public boolean isSaved() {

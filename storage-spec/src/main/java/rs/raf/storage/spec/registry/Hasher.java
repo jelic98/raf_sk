@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class Hasher {
+public final class Hasher {
 
-    String hashUsername(User user) {
+    public String hashUsername(User user) {
         return hash(user.getName());
     }
 
-    String hashPassword(User user) {
+    public String hashPassword(User user) {
         if(user.isSaved()) {
             return user.getPassword();
         }

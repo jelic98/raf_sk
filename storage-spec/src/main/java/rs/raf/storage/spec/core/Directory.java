@@ -4,6 +4,7 @@ import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.auth.Authorizer;
 import rs.raf.storage.spec.exception.ForbiddenTypeException;
 import rs.raf.storage.spec.exception.StorageException;
+import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import java.util.LinkedList;
 import java.util.List;

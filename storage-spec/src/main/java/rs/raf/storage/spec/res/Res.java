@@ -11,7 +11,6 @@ public final class Res {
     public static final class Registry {
         public final static String KEY_OWNER = "owner";
         public final static String KEY_USERS = "users";
-        public final static String KEY_USERNAME = "username";
         public final static String KEY_PASSWORD = "password";
         public final static String KEY_PRIVILEGES = "privileges";
         public final static String KEY_FILE = "file";

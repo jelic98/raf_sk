@@ -9,6 +9,8 @@ import rs.raf.storage.spec.core.Metadata;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.RegistryException;
 import rs.raf.storage.spec.res.Res;
+
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
@@ -34,6 +36,8 @@ final class RegistryLoader {
     private void loadUsers(Storage storage) throws RegistryException {
         Map<String, File> files = hasher.hashFiles(extractor.extract(storage));
 
+        User owner = null;
+
         try {
             JSONObject registryJson = parser.parseJson(storage.getRegistryPath());
             JSONObject usersJson = registryJson.getJSONObject(Res.Registry.KEY_USERS);
@@ -41,14 +45,21 @@ final class RegistryLoader {
             Iterator<String> userHashes = usersJson.keys();
 
             while(userHashes.hasNext()) {
-                JSONObject userJson = usersJson.getJSONObject(userHashes.next());
+                String username = userHashes.next();
 
-                User user = new User(userJson.getString(Res.Registry.KEY_USERNAME), userJson.getString(Res.Registry.KEY_PASSWORD));
-                user.setSaved(true);
+                JSONObject userJson = usersJson.getJSONObject(username);
+
+                User user = new User(username, userJson.getString(Res.Registry.KEY_PASSWORD));
+
+                if(user.equals(storage.getActiveUser())) {
+                    user = storage.getActiveUser();
+                }
 
                 if(registryJson.getString(Res.Registry.KEY_OWNER).equals(user.getName())) {
-                    invokeSetter("owner", storage, user);
+                    owner = user;
                 }
+
+                user.setSaved(true);
 
                 JSONArray privilegesJson = userJson.getJSONArray(Res.Registry.KEY_PRIVILEGES);
 
@@ -68,6 +79,8 @@ final class RegistryLoader {
 
                 storage.addUser(user);
             }
+
+            setPrivateField("owner", Storage.class, storage, owner);
         }catch(Exception e) {
             throw new RegistryException();
         }
@@ -117,14 +130,14 @@ final class RegistryLoader {
         }
     }
 
-    private void invokeSetter(String field, Object object, Object value) throws ReflectiveOperationException {
+    private void setPrivateField(String field, Class clazz, Object object, Object value) throws ReflectiveOperationException {
         if(object == null || value == null) {
             return;
         }
 
-        String setterName = "set" + (field.substring(0, 1).toUpperCase() + field.substring(1));
-
-        Method method = object.getClass().getMethod(setterName, value.getClass());
-        method.invoke(object, value);
+        Field f1 = clazz.getDeclaredField(field);
+        f1.setAccessible(true);
+        f1.set(object, value);
+        f1.setAccessible(false);
     }
 }

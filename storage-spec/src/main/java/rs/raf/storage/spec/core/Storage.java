@@ -6,6 +6,7 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import rs.raf.storage.spec.exception.PrivilegeException;
 import rs.raf.storage.spec.exception.StorageException;
+import rs.raf.storage.spec.registry.Hasher;
 import rs.raf.storage.spec.registry.Registry;
 import rs.raf.storage.spec.res.Res;
 import java.util.LinkedList;
@@ -18,6 +19,8 @@ public abstract class Storage {
 
     private static volatile Storage instance;
 
+    private static Hasher hasher;
+
     private Registry registry;
     private Directory root;
     private String rootPath;
@@ -26,6 +29,10 @@ public abstract class Storage {
     private List<String> forbiddenTypes;
     private Authorizer authorizer;
     private String uid;
+
+    static {
+        hasher = new Hasher();
+    }
 
     protected Storage() {
         reset();
@@ -78,7 +85,7 @@ public abstract class Storage {
         users.add(user);
 
         if(owner == null) {
-            owner = user;
+            owner = new User(hasher.hashUsername(user), hasher.hashPassword(user));
         }
 
         onConnect();
@@ -94,8 +101,8 @@ public abstract class Storage {
             return;
         }
 
-        uid = null;
         registry.save(user, this);
+        uid = null;
         activeUser = null;
 
         onDisconnect();
@@ -164,7 +171,9 @@ public abstract class Storage {
      * @throws PrivilegeException if currently active user does not have privilege to manage other users.
      */
     public final void addUser(User user) throws PrivilegeException {
-        authorizer.checkManage(activeUser, this);
+        if(activeUser != null) {
+            authorizer.checkManage(activeUser, this);
+        }
 
         users.add(user);
     }

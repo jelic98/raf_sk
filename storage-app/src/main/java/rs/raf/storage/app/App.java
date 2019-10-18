@@ -353,6 +353,24 @@ public class App {
                             .addInput(new Input("File"))
                             .addInput(new Input("Key"))
                             .addInput(new Input("Value")))
+                    .addOption(new ExecuteOption("Forbid type") {
+                        @Override
+                        public void execute() {
+                            String type = getInput("type").getValue();
+                            storage.forbidType(type);
+                            log("Type successfully forbidden");
+                        }
+                    }
+                            .addInput(new Input("Type")))
+                    .addOption(new ExecuteOption("Allow type") {
+                        @Override
+                        public void execute() {
+                            String type = getInput("type").getValue();
+                            storage.allowType(type);
+                            log("Type successfully allowed");
+                        }
+                    }
+                            .addInput(new Input("Type")))
                     .addOption(new ExecuteOption("List directory") {
                         @Override
                         public void execute() {

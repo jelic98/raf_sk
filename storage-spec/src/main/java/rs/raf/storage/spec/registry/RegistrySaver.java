@@ -72,6 +72,7 @@ final class RegistrySaver {
                 }
 
                 userJson.put(Res.Registry.KEY_PRIVILEGES, privilegesJson);
+                usersJson.put(hasher.hashUsername(user), userJson);
             }
 
             registryJson.remove(Res.Registry.KEY_USERS);

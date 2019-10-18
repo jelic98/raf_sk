@@ -3,8 +3,15 @@ package rs.raf.storage.spec.auth;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.PrivilegeException;
+import rs.raf.storage.spec.registry.Hasher;
 
 public final class Authorizer {
+
+    private static Hasher hasher;
+
+    static {
+        hasher = new Hasher();
+    }
 
     /**
      * Check if provided user can read from provided file.
@@ -13,7 +20,10 @@ public final class Authorizer {
      * @throws PrivilegeException if user does not have read privilege on provided file.
      */
     public void checkRead(User user, File file) throws PrivilegeException {
-        if(!user.getPrivilege(file).canRead()) {
+        User hashedUser = new User(hasher.hashUsername(user), hasher.hashPassword(user));
+        hashedUser.setPrivileges(user.getPrivileges());
+
+        if(!hashedUser.getPrivilege(file).canRead()) {
             throw new PrivilegeException(user, file);
         }
     }
@@ -25,7 +35,10 @@ public final class Authorizer {
      * @throws PrivilegeException if user does not have write privilege on provided file.
      */
     public void checkWrite(User user, File file) throws PrivilegeException {
-        if(!user.getPrivilege(file).canWrite()) {
+        User hashedUser = new User(hasher.hashUsername(user), hasher.hashPassword(user));
+        hashedUser.setPrivileges(user.getPrivileges());
+
+        if(!hashedUser.getPrivilege(file).canWrite()) {
             throw new PrivilegeException(user, file);
         }
     }
@@ -37,7 +50,10 @@ public final class Authorizer {
      * @throws PrivilegeException if user does not have delete privilege on provided file.
      */
     public void checkDelete(User user, File file) throws PrivilegeException {
-        if(!user.getPrivilege(file).canDelete()) {
+        User hashedUser = new User(hasher.hashUsername(user), hasher.hashPassword(user));
+        hashedUser.setPrivileges(user.getPrivileges());
+
+        if(!hashedUser.getPrivilege(file).canDelete()) {
             throw new PrivilegeException(user, file);
         }
     }
@@ -49,7 +65,10 @@ public final class Authorizer {
      * @throws PrivilegeException if user does not have manage privilege on provided storage.
      */
     public void checkManage(User user, Storage storage) throws PrivilegeException {
-        if(!storage.getOwner().equals(user)) {
+        User hashedUser = new User(hasher.hashUsername(user), hasher.hashPassword(user));
+        hashedUser.setPrivileges(user.getPrivileges());
+
+        if(storage.getOwner() != null && !storage.getOwner().equals(hashedUser)) {
             throw new PrivilegeException(user);
         }
     }
