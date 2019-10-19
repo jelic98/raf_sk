@@ -186,7 +186,7 @@ public class App {
                             Directory destination;
 
                             try {
-                                destination = (Directory) driver.getFile(destinationPath);
+                                destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
                                 destination.upload(sourcePath);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
@@ -229,7 +229,7 @@ public class App {
                             File source;
 
                             try {
-                                source = driver.getFile(sourcePath);
+                                source = new Path(Res.Wildcard.SEPARATOR + sourcePath, storage).resolve();
                                 source.download(destination);
                             }catch (StorageException e) {
                                 app.log(e);
@@ -249,8 +249,8 @@ public class App {
                             Directory destination;
 
                             try {
-                                source = driver.getFile(sourcePath);
-                                destination = (Directory) driver.getFile(destinationPath);
+                                source = new Path(Res.Wildcard.SEPARATOR + sourcePath, storage).resolve();
+                                destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, Storage.instance()).resolve();
                                 source.copy(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
@@ -273,8 +273,8 @@ public class App {
                             Directory destination;
 
                             try {
-                                source = driver.getFile(sourcePath);
-                                destination = (Directory) driver.getFile(destinationPath);
+                                source = new Path(Res.Wildcard.SEPARATOR + sourcePath, Storage.instance()).resolve();
+                                destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, Storage.instance()).resolve();
                                 source.move(destination);
                             } catch (ClassCastException e) {
                                 log("Directory not selected");

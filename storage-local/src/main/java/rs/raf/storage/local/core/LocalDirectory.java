@@ -24,30 +24,14 @@ public class LocalDirectory extends Directory {
 
 	@Override
 	protected void onCopy(Directory destination) throws StorageException {
-		try {
-			String s = getAbsolutePath(getPath());
-			Path sep = new Path(Res.Wildcard.SEPARATOR, null);
+		String s = getAbsolutePath(getPath());
 			
-			String separator = sep.build();
-
-			String srcName = this.getName();
-			String dir = destination.getAbsolutePath(destination.getPath());
-			
-			dir = dir + separator + srcName;
-			
-			java.nio.file.Path src = Paths.get(s);
-			java.nio.file.Path dire = Paths.get(dir);
-			
-			Files.copy(src, dire, StandardCopyOption.REPLACE_EXISTING);
-			destination.getChildren().add(this);
-		} catch (IOException e) {
-			throw new StorageException(e.getMessage());
-		}
+		destination.upload(s);
 	}
 
 	@Override
 	protected void onDownload(String path) throws StorageException {
-		String src = getAbsolutePath(this.getPath());
+		String src = getAbsolutePath(getPath());
 		String srcName = getName();
 		
 		Path sep = new Path(Res.Wildcard.SEPARATOR, null);
