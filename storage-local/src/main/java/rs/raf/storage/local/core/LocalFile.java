@@ -34,8 +34,8 @@ public class LocalFile extends File {
 
 	@Override
 	protected void onDownload(String path) throws StorageException {
-		String src = this.getAbsolutePath(this.getPath());
-		String srcName = this.getName();
+		String src = getAbsolutePath(getPath());
+		String srcName = getName();
 		
 		Path sep = new Path(Res.Wildcard.SEPARATOR, null);
 		

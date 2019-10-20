@@ -64,15 +64,6 @@ public class LocalStorageDriver extends StorageDriver {
 	public File getFile(String name) {
 		String separator = new Path(Res.Wildcard.SEPARATOR, null).build();
 		
-		try {
-			File f = new Path(separator + name, Storage.instance()).resolve();
-			return f;
-		} catch (NonExistenceException e) {
-			
-		} catch (DriverNotRegisteredException e) {
-			
-		}
-		
 		if(name.endsWith(separator))
 			return getDirectory(name);
 		return new LocalFile(name);
