@@ -47,7 +47,7 @@ class GDriveUtils {
                 FileList result = GDriveStorage.drive.files().list()
                         .setQ("mimeType='application/vnd.google-apps.folder'")
                         .setSpaces("drive")
-                        .setFields("nextPageToken, files(id, name)")
+                        .setFields("nextPageToken, files(id, name, mimeType)")
                         .setPageToken(pageToken)
                         .execute();
 

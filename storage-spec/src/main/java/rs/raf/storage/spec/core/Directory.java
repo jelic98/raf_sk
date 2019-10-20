@@ -74,25 +74,28 @@ public abstract class Directory extends File {
 
         String name = new Path(path, Storage.instance()).extractName();
         
-        if(name.isEmpty())
-        	name = new Path(path.substring(0, path.length() - 1), Storage.instance()).extractName();
+        if(name.isEmpty()) {
+            name = new Path(path.substring(0, path.length() - 1), Storage.instance()).extractName();
+        }
+
         String type = new Path(path, Storage.instance()).extractType();
 
         if(Storage.instance().getForbiddenTypes().contains(type)) {
             throw new ForbiddenTypeException(this);
         }
 
-        if(type.isEmpty()) 
-        	name = new Path(name + Res.Wildcard.SEPARATOR, null).build();
-        
-        File file = StorageDriverManager.getDriver().getFile(name);
-    	file.setParent(this);
-    	
-        if(type.isEmpty())
-        	((Directory) file).onUpload(path, this);
-        else 
-        	file.onUpload(path, this);
-        	
+        File file;
+
+        if(type.isEmpty()) {
+            file = StorageDriverManager.getDriver()
+                    .getDirectory(new Path(name + Res.Wildcard.SEPARATOR, null).build());
+        }else {
+            file = StorageDriverManager.getDriver().getFile(name);
+        }
+
+        file.setParent(this);
+        file.onUpload(path, this);
+
         children.add(file);
     }
 

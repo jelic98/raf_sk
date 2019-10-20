@@ -37,7 +37,10 @@ public abstract class File {
      */
     public void delete() throws StorageException {
         authorizer.checkDelete(Storage.instance().getActiveUser(), this);
-        parent.removeChild(this);
+
+        if(hasParent()) {
+            parent.removeChild(this);
+        }
 
         onDelete();
     }

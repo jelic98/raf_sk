@@ -28,26 +28,7 @@ public class GDriveDirectory extends Directory {
 
     @Override
     protected void onCopy(Directory destination) throws StorageException {
-        try {
-            String tmpPath = new Path(GDriveUtils.TMP_PATH, Storage.instance()).build();
-            java.io.File tmpDir = new java.io.File(tmpPath);
-            tmpDir.mkdirs();
-
-            String name = new Path(getPath(), Storage.instance()).extractName();
-
-            onDownload(tmpPath);
-            onUpload(new Path(tmpPath + Res.Wildcard.SEPARATOR + name, Storage.instance()).build(), destination);
-
-            String[] tmpFiles = tmpDir.list();
-
-            for(String s : tmpFiles) {
-                new java.io.File(tmpDir.getPath(), s).delete();
-            }
-
-            tmpDir.delete();
-        }catch(Exception e) {
-            throw new StorageException(e.getMessage());
-        }
+        System.out.println("Directories cannot be copied in Google Drive");
     }
 
     @Override
@@ -73,13 +54,6 @@ public class GDriveDirectory extends Directory {
 
     @Override
     protected void onDownload(String path) throws StorageException {
-        try {
-            String name = new Path(getPath(), Storage.instance()).extractName();
-
-            GDriveStorage.drive.files().get(GDriveUtils.getDirFromPath(this).getId())
-                    .executeMediaAndDownloadTo(new FileOutputStream(new java.io.File(path, name)));
-        }catch(Exception e) {
-            throw new StorageException(e.getMessage());
-        }
+        System.out.println("Directories cannot be downloaded in Google Drive");
     }
 }

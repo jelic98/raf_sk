@@ -22,12 +22,13 @@ public class GDriveStorage extends Storage {
     private static final String CREDENTIALS_PATH = "/credentials.json";
 
     static Drive drive;
-    static HttpTransport transport;
 
     @Override
     protected void onConnect() {
         try {
             JacksonFactory factory = JacksonFactory.getDefaultInstance();
+
+            HttpTransport transport;
 
             Credential credential = new AuthorizationCodeInstalledApp(new GoogleAuthorizationCodeFlow
                     .Builder(transport = GoogleNetHttpTransport.newTrustedTransport(),

@@ -8,11 +8,11 @@ public class GDriveArchiver extends Archiver {
 
     @Override
     public void archive(List<File> list) {
-
+        System.out.println("Archiver is not supported in Google Drive");
     }
 
     @Override
     public void unarchive(File file) {
-
+        System.out.println("Archiver is not supported in Google Drive");
     }
 }
