@@ -56,7 +56,6 @@ public final class Path {
      * @return Path that is platform dependent.
      */
     public String build() {
-    	path = Res.Wildcard.SEPARATOR + path;
         return path
                 .replace(Res.Wildcard.SEPARATOR, FileSystems.getDefault().getSeparator())
                 .replace(FileSystems.getDefault().getSeparator() + FileSystems.getDefault().getSeparator(), FileSystems.getDefault().getSeparator())

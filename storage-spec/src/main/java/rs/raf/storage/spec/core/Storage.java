@@ -79,7 +79,6 @@ public abstract class Storage {
         }
 
         this.uid = uid;
-        root = buildRoot(rootPath = path);
         registry.load(user, this);
         activeUser = user;
         users.add(user);
@@ -88,6 +87,8 @@ public abstract class Storage {
             owner = new User(hasher.hashUsername(user), hasher.hashPassword(user));
         }
 
+        root = buildRoot(rootPath = path);
+        
         onConnect();
     }
 

@@ -59,7 +59,7 @@ public class App {
         StorageStructure(App app) throws Exception {
             this.app = app;
 
-            Class.forName("rs.raf.storage.gdrive.GDriveStorageDriver");
+            Class.forName("rs.raf.storage.local.LocalStorageDriver");
 
             driver = StorageDriverManager.getDriver();
             storage = Storage.instance();
