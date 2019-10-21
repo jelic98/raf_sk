@@ -59,7 +59,7 @@ public class App {
         StorageStructure(App app) throws Exception {
             this.app = app;
 
-            Class.forName("rs.raf.storage.local.LocalStorageDriver");
+            Class.forName("rs.raf.storage.gdrive.GDriveStorageDriver");
 
             driver = StorageDriverManager.getDriver();
             storage = Storage.instance();
@@ -77,7 +77,7 @@ public class App {
 
         @Override
         protected Question create() {
-            return new Question("What operation to execute?\n(Directories end with separator)")
+            return new Question("What operation to execute?")
                     .addOption(new ExecuteOption("Connect to storage") {
                         @Override
                         public void execute() {

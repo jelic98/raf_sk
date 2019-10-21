@@ -26,16 +26,9 @@ public class LocalStorage extends Storage {
 	protected Directory buildRoot(String path) {
 		File file = new File(path);
 		file.mkdirs();
-		
+
+		// TODO Get all child files and attach them to root
+
 		return new LocalDirectory("");
 	}
-	
-	private static void makeDirs(String path) {
-		String separator = new Path(Res.Wildcard.SEPARATOR, null).build();
-		path = path.contains(separator) ? path.substring(0, path.indexOf(separator)) : path;
-		File file = new File(path);
-		
-		file.mkdirs();
-	}
-	
 }
