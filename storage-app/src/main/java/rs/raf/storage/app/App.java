@@ -310,7 +310,7 @@ public class App {
                             File file = null;
 
 							try {
-								file = new Path(path, storage).resolve();
+								file = new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
 							} catch(StorageException e) {
                             	app.log(e);
                             }
@@ -337,7 +337,7 @@ public class App {
                             File file = null;
 
 							try {
-								file = new Path(path, storage).resolve();
+								file = new Path(Res.Wildcard.SEPARATOR + path, storage).resolve();
 							} catch(StorageException e) {
                             	app.log(e);
                             }

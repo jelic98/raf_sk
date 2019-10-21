@@ -62,10 +62,6 @@ public class LocalStorageDriver extends StorageDriver {
 
 	@Override
 	public File getFile(String name) {
-		String separator = new Path(Res.Wildcard.SEPARATOR, null).build();
-		
-		if(name.endsWith(separator))
-			return getDirectory(name);
 		return new LocalFile(name);
 	}
 }
