@@ -40,18 +40,20 @@ public abstract class Directory extends File {
     @Override
     public void copy(Directory destination) throws StorageException {
         super.copy(destination);
-
+        Path p = new Path(destination.getName() + Res.Wildcard.SEPARATOR + getName(), Storage.instance());
+        
         for(File child : getChildren()) {
-            child.copy(destination);
+            child.copy((Directory) p.resolve());
         }
     }
 
     @Override
     public void download(String path) throws StorageException {
         super.download(path);
+        Path p = new Path(path + Res.Wildcard.SEPARATOR + getName(), null);
 
         for(File child : getChildren()) {
-            child.download(path);
+            child.download(p.build());
         }
     }
 

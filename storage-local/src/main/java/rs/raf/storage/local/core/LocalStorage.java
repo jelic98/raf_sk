@@ -30,7 +30,7 @@ public class LocalStorage extends Storage {
 		return new LocalDirectory("");
 	}
 	
-	public static void makeDirs(String path) {
+	private static void makeDirs(String path) {
 		String separator = new Path(Res.Wildcard.SEPARATOR, null).build();
 		path = path.contains(separator) ? path.substring(0, path.indexOf(separator)) : path;
 		File file = new File(path);

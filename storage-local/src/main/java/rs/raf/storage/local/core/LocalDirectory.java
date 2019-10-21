@@ -45,10 +45,6 @@ public class LocalDirectory extends Directory {
 		
 		try {
 			Files.copy(srcP, dire, StandardCopyOption.REPLACE_EXISTING);
-			File tmp = new File(src);
-			for (File fileEntry : tmp.listFiles()) {
-		        this.download(fileEntry.getAbsolutePath());
-		    }
 		} catch (IOException e) {
 			throw new StorageException(e.getMessage());
 		}
