@@ -8,11 +8,9 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.*;
 import rs.raf.storage.spec.exception.NonExistenceException;
 import rs.raf.storage.spec.exception.StorageException;
-import rs.raf.storage.spec.registry.Registry;
 import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import rs.raf.storage.spec.search.CriteriaType;
-import java.util.LinkedList;
 import java.util.List;
 
 public class App {
