@@ -8,11 +8,9 @@ import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.*;
 import rs.raf.storage.spec.exception.NonExistenceException;
 import rs.raf.storage.spec.exception.StorageException;
-import rs.raf.storage.spec.registry.Registry;
 import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import rs.raf.storage.spec.search.CriteriaType;
-import java.util.LinkedList;
 import java.util.List;
 
 public class App {
@@ -61,7 +59,7 @@ public class App {
         StorageStructure(App app) throws Exception {
             this.app = app;
 
-            Class.forName("rs.raf.storage.local.LocalStorageDriver");
+            Class.forName("rs.raf.storage.gdrive.GDriveStorageDriver");
 
             driver = StorageDriverManager.getDriver();
             storage = Storage.instance();
@@ -79,7 +77,7 @@ public class App {
 
         @Override
         protected Question create() {
-            return new Question("What operation to execute?\n(Directories end with separator)")
+            return new Question("What operation to execute?")
                     .addOption(new ExecuteOption("Connect to storage") {
                         @Override
                         public void execute() {

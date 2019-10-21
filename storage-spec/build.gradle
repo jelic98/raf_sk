@@ -3,11 +3,13 @@ plugins {
 }
 
 group 'rs.raf.storage.spec'
-version '0.0.1'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 
 jar {
+    archiveFileName = 'storage-spec.jar'
+
     manifest {
         attributes('Implementation-Title': project.name,
                 'Implementation-Version': project.version)
@@ -19,5 +21,5 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.json', name: 'json', version: '20190722'
+    implementation group: 'org.json', name: 'json', version: '20190722'
 }

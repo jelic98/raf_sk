@@ -50,7 +50,7 @@ final class RegistrySaver {
                 JSONObject userJson = new JSONObject();
                 userJson.put(Res.Registry.KEY_PASSWORD, user.isSaved() ? user.getPassword() : hasher.hashPassword(user));
 
-                if(storage.getOwner().equals(user)) {
+                if(storage.getOwner().getName().equals(user.isSaved() ? user.getName() : hasher.hashUsername(user))) {
                     registryJson.put(Res.Registry.KEY_OWNER, user.isSaved() ? user.getName() : hasher.hashUsername(user));
                 }
 
