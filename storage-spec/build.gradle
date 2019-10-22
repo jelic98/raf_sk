@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'rs.raf.storage.spec'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+configurations {
+    provided
+    compile.extendsFrom(provided)
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.json', name: 'json', version: '20190722'
+    provided group: 'org.json', name: 'json', version: '20190722'
+}
+
+jar {
+    archiveFileName = 'storage-spec.jar'
+
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+
+    from configurations.provided.asFileTree.files.collect { zipTree(it) }
+}

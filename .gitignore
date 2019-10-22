@@ -4,7 +4,10 @@
 *.iml
 credentials.json
 .idea/
+out/
 */build/
 */.gradle/
 local.properties
 .gradletasknamecache
+credentials.json
+StoredCredential

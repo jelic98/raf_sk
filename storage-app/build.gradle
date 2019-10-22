@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group 'rs.raf.storage.app'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation files('../storage-spec/build/libs/storage-spec.jar')
+    implementation files('../storage-local/build/libs/storage-local.jar')
+    implementation files('../storage-gdrive/build/libs/storage-gdrive.jar')
+    implementation 'com.github.jelic98:konzole:v1.1.3'
+}
