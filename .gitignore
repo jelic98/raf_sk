@@ -6,6 +6,7 @@
 out/
 */build/
 */.gradle/
+storage-spec/docs/
 local.properties
 .gradletasknamecache
 credentials.json
