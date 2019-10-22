@@ -3,17 +3,13 @@ plugins {
 }
 
 group 'rs.raf.storage.gdrive'
-version '0.0.1'
+version '1.0.0'
 
 sourceCompatibility = 1.8
 
-jar {
-    archiveFileName = 'storage-gdrive.jar'
-
-    manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version)
-    }
+configurations {
+    provided
+    compile.extendsFrom(provided)
 }
 
 repositories {
@@ -26,4 +22,19 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+
+    provided 'com.google.api-client:google-api-client:1.23.0'
+    provided 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    provided 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+}
+
+jar {
+    archiveFileName = 'storage-gdrive.jar'
+
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version)
+    }
+
+    from configurations.provided.asFileTree.files.collect { zipTree(it) }
 }
