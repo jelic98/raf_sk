@@ -34,9 +34,6 @@ public class App {
     }
 
     private void log(Exception e) {
-        // FOR TESTING PURPOSES ONLY
-         e.printStackTrace();
-
         System.err.println(e.getMessage());
 
         try {
