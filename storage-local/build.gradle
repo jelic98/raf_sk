@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'rs.raf.storage.local'
@@ -7,19 +7,28 @@ version '1.0.0'
 
 sourceCompatibility = 1.8
 
-jar {
-    archiveFileName = 'storage-local.jar'
-
-    manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version)
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
     implementation files('../storage-spec/build/libs/storage-spec.jar')
+}
+
+jar {
+    archiveFileName = 'storage-local.jar'
+
+    project.configurations.api.setCanBeResolved(true)
+
+    manifest {
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Class-Path': configurations.api.collect { it.getName() }.join(' ')
+        )
+    }
+
+    from {
+        configurations.api.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

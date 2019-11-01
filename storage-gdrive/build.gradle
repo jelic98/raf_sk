@@ -1,16 +1,11 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'rs.raf.storage.gdrive'
 version '1.0.0'
 
 sourceCompatibility = 1.8
-
-configurations {
-    provided
-    compile.extendsFrom(provided)
-}
 
 repositories {
     mavenCentral()
@@ -19,22 +14,25 @@ repositories {
 dependencies {
     implementation files('../storage-spec/build/libs/storage-spec.jar')
 
-    implementation 'com.google.api-client:google-api-client:1.23.0'
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    implementation 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
-
-    provided 'com.google.api-client:google-api-client:1.23.0'
-    provided 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    provided 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
+    api 'com.google.api-client:google-api-client:1.23.0'
+    api 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    api 'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
 }
 
 jar {
     archiveFileName = 'storage-gdrive.jar'
 
+    project.configurations.api.setCanBeResolved(true)
+
     manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version)
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Class-Path': configurations.api.collect { it.getName() }.join(' ')
+        )
     }
 
-    from configurations.provided.asFileTree.files.collect { zipTree(it) }
+    from {
+        configurations.api.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
