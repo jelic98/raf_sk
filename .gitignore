@@ -3,7 +3,9 @@
 *.jar
 *.iml
 credentials.json
+.gradle/
 .idea/
+build/
 out/
 */build/
 */.gradle/

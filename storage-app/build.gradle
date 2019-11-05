@@ -5,11 +5,9 @@ plugins {
 group 'rs.raf.storage.app'
 version '1.0.0'
 
-sourceCompatibility = 1.8
 mainClassName = 'rs.raf.storage.app.App'
 
 repositories {
-    mavenCentral()
     maven { url 'https://jitpack.io' }
 }
 
