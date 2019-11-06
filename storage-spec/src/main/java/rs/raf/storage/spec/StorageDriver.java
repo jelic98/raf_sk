@@ -4,6 +4,7 @@ import rs.raf.storage.spec.archive.Archiver;
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Storage;
+import rs.raf.storage.spec.maker.FileMaker;
 
 /**
  * Abstract factory for creating storage entities.
@@ -27,6 +28,8 @@ public abstract class StorageDriver {
     public abstract File getFile(String name);
 
     public abstract Archiver getArchiver();
+    
+    public abstract FileMaker getFileMaker();
 
     public final String getName() {
         return name;

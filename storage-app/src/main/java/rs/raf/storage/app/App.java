@@ -3,14 +3,20 @@ package rs.raf.storage.app;
 import com.konzole.framework.*;
 import rs.raf.storage.spec.StorageDriver;
 import rs.raf.storage.spec.StorageDriverManager;
+import rs.raf.storage.spec.archive.Archiver;
 import rs.raf.storage.spec.auth.Privilege;
 import rs.raf.storage.spec.auth.User;
 import rs.raf.storage.spec.core.*;
+import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import rs.raf.storage.spec.exception.NonExistenceException;
 import rs.raf.storage.spec.exception.StorageException;
+import rs.raf.storage.spec.maker.FileMaker;
 import rs.raf.storage.spec.res.Res;
 import rs.raf.storage.spec.search.Criteria;
 import rs.raf.storage.spec.search.CriteriaType;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class App {
@@ -214,6 +220,56 @@ public class App {
                                 app.log(e);
                             }
 
+                            log("Uploaded successfully");
+                        }
+                    }.addInput(new Input("sources", "Sources (space separated)"))
+                    .addInput(new Input("Destination")))
+                    .addOption(new ExecuteOption("Make Directories") {
+                        @Override
+                        public void execute() {
+                            FileMaker maker = driver.getFileMaker();
+                            String baseName = getInput("base name").getValue();
+                            String destinationPath = getInput("destination").getValue();
+                            int rangeBegin = Integer.parseInt(getInput("begin index").getValue());
+                            int rangeEnd = Integer.parseInt(getInput("end index").getValue());
+
+                            try {
+                            	Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
+								maker.makeRange(baseName, rangeBegin, rangeEnd, destination);
+							} catch (DriverNotRegisteredException e) {
+								
+							} catch (StorageException e) {
+								
+							}
+
+                            log("Uploaded successfully");
+                        }
+                    }.addInput(new Input("Base name"))
+                    .addInput(new Input("Begin index"))
+                    .addInput(new Input("End index"))
+                    .addInput(new Input("Destination")))
+                    .addOption(new ExecuteOption("Zip file") {
+                        @Override
+                        public void execute() {
+                        	Archiver archiver = driver.getArchiver();
+                        	List<File> files = new LinkedList<>();
+                        	String[] sourcePaths = getInput("sources").getValue().split(" ");
+                            String destinationPath = getInput("destination").getValue();
+                            	
+                            try {
+                            	for(String s : sourcePaths) {
+                                	files.add(new Path(Res.Wildcard.SEPARATOR + s, storage).resolve());
+                                }
+                                Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
+                                archiver.archive(files);
+                                destination.upload(sourcePaths);
+                            } catch (ClassCastException e) {
+                                log("Directory not selected");
+                                return;
+                            } catch (StorageException e) {
+                                app.log(e);
+                            }
+                            
                             log("Uploaded successfully");
                         }
                     }.addInput(new Input("sources", "Sources (space separated)"))

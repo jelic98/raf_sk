@@ -8,6 +8,7 @@ import rs.raf.storage.local.archive.LocalArchiver;
 import rs.raf.storage.local.core.LocalDirectory;
 import rs.raf.storage.local.core.LocalFile;
 import rs.raf.storage.local.core.LocalStorage;
+import rs.raf.storage.local.maker.LocalFileMaker;
 import rs.raf.storage.spec.StorageDriver;
 import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.archive.Archiver;
@@ -18,6 +19,7 @@ import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
 import rs.raf.storage.spec.exception.NonExistenceException;
+import rs.raf.storage.spec.maker.FileMaker;
 import rs.raf.storage.spec.res.Res;
 
 public class LocalStorageDriver extends StorageDriver {
@@ -63,5 +65,10 @@ public class LocalStorageDriver extends StorageDriver {
 	@Override
 	public File getFile(String name) {
 		return new LocalFile(name);
+	}
+
+	@Override
+	public FileMaker getFileMaker() {
+		return new LocalFileMaker();
 	}
 }

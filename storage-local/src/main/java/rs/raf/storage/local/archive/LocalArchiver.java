@@ -4,6 +4,7 @@ import rs.raf.storage.local.core.LocalDirectory;
 import rs.raf.storage.spec.archive.Archiver;
 import rs.raf.storage.spec.core.Directory;
 import rs.raf.storage.spec.core.File;
+import rs.raf.storage.spec.core.Path;
 import rs.raf.storage.spec.res.Res;
 
 import java.io.FileInputStream;
@@ -26,15 +27,16 @@ public class LocalArchiver extends Archiver {
     @Override
     public void archive(List<File> list) {
     	String tmpStr = "tmpDir";
-    	String parent = list.get(0).getParent().getPath();
-    	java.io.File folder = new java.io.File(parent + tmpStr);
+    	String parent = list.get(0).getParent().getAbsolutePath(list.get(0).getParent().getPath());
+    	java.io.File folder = new java.io.File(new Path(parent + Res.Wildcard.SEPARATOR + tmpStr, null).build());
+    	folder.mkdirs();
     	LocalDirectory absFolder = new LocalDirectory(folder.toString());
     	absFolder.extract(list);
     	
     	try {
     		
     		for(File f : list) {
-    			Files.copy(Paths.get(f.getPath()), Paths.get(folder.getPath()), StandardCopyOption.REPLACE_EXISTING);
+    			Files.copy(Paths.get(f.getAbsolutePath(f.getPath())), Paths.get(folder.getPath()), StandardCopyOption.REPLACE_EXISTING);
     		}
 			
 		} catch (IOException e) {
