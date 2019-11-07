@@ -2,10 +2,14 @@
 *.class
 *.jar
 *.iml
+credentials.json
+.gradle/
 .idea/
+build/
 out/
 */build/
 */.gradle/
+storage-spec/docs/
 local.properties
 .gradletasknamecache
 credentials.json

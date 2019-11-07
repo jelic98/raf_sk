@@ -1,21 +1,13 @@
 plugins {
-    id 'java'
+    id 'application'
 }
 
 group 'rs.raf.storage.app'
 version '1.0.0'
 
-sourceCompatibility = 1.8
-
-jar {
-    manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version)
-    }
-}
+mainClassName = 'rs.raf.storage.app.App'
 
 repositories {
-    mavenCentral()
     maven { url 'https://jitpack.io' }
 }
 
@@ -23,6 +15,25 @@ dependencies {
     implementation files('../storage-spec/build/libs/storage-spec.jar')
     implementation files('../storage-local/build/libs/storage-local.jar')
     implementation files('../storage-gdrive/build/libs/storage-gdrive.jar')
-    implementation 'com.github.jelic98:konzole:v1.1.3'
-    implementation group: 'org.json', name: 'json', version: '20190722'
+    
+	implementation 'com.github.jelic98:konzole:v1.1.3'
+}
+
+jar {
+    archiveFileName = 'storage-app.jar'
+    
+	manifest {
+        project.configurations.implementation.setCanBeResolved(true)
+
+        attributes (
+			'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+			'Class-Path': configurations.implementation.collect { it.getName() }.join(' '),
+      		'Main-Class': 'rs.raf.storage.app.App'
+		)
+    }
+
+    from {
+        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

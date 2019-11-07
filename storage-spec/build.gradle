@@ -1,25 +1,28 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group 'rs.raf.storage.spec'
 version '1.0.0'
 
-sourceCompatibility = 1.8
+dependencies {
+    api group: 'org.json', name: 'json', version: '20190722'
+}
 
 jar {
     archiveFileName = 'storage-spec.jar'
 
+    project.configurations.api.setCanBeResolved(true)
+
     manifest {
-        attributes('Implementation-Title': project.name,
-                'Implementation-Version': project.version)
+        attributes(
+                'Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Class-Path': configurations.api.collect { it.getName() }.join(' ')
+        )
     }
-}
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation group: 'org.json', name: 'json', version: '20190722'
+    from {
+        configurations.api.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

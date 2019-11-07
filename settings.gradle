@@ -1,0 +1,5 @@
+rootProject.name = 'raf_sk'
+include 'storage-spec'
+include 'storage-local'
+include 'storage-gdrive'
+include 'storage-app'
