@@ -261,8 +261,8 @@ public class App {
                                 	files.add(new Path(Res.Wildcard.SEPARATOR + s, storage).resolve());
                                 }
                                 Directory destination = (Directory) new Path(Res.Wildcard.SEPARATOR + destinationPath, storage).resolve();
-                                archiver.archive(files);
-                                destination.upload(sourcePaths);
+                                archiver.archive(files, destination);
+                               
                             } catch (ClassCastException e) {
                                 log("Directory not selected");
                                 return;
