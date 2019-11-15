@@ -1,3 +1,3 @@
-# RAF SK - Project 1
+# RAF SK - Project 2
 
 README is under construction.
