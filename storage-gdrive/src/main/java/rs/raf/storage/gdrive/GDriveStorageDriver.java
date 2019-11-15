@@ -4,6 +4,7 @@ import rs.raf.storage.gdrive.archive.GDriveArchiver;
 import rs.raf.storage.gdrive.core.GDriveDirectory;
 import rs.raf.storage.gdrive.core.GDriveFile;
 import rs.raf.storage.gdrive.core.GDriveStorage;
+import rs.raf.storage.gdrive.maker.GDriveFileMaker;
 import rs.raf.storage.spec.StorageDriver;
 import rs.raf.storage.spec.StorageDriverManager;
 import rs.raf.storage.spec.archive.Archiver;
@@ -12,6 +13,7 @@ import rs.raf.storage.spec.core.File;
 import rs.raf.storage.spec.core.Storage;
 import rs.raf.storage.spec.exception.DriverAlreadyRegisteredException;
 import rs.raf.storage.spec.exception.DriverNotRegisteredException;
+import rs.raf.storage.spec.maker.FileMaker;
 
 public class GDriveStorageDriver extends StorageDriver {
 
@@ -56,5 +58,10 @@ public class GDriveStorageDriver extends StorageDriver {
     @Override
     public File getFile(String name) {
         return new GDriveFile(name);
+    }
+
+    @Override
+    public FileMaker getFileMaker() {
+        return new GDriveFileMaker();
     }
 }
