@@ -1,0 +1,47 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') {
+        reader -> localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+
+apply plugin: 'com.android.application'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion 27
+	buildToolsVersion '27.0.3'
+    defaultConfig {
+        applicationId "rs.raf.rafpored"
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionCode 3
+        versionName "1.0.2"
+    }
+    signingConfigs {
+        release {
+            keyAlias 'Rafpored'
+            keyPassword 'Hq68jWGJZm'
+            storeFile file('/Users/Lazar/Documents/rafpored/keystore.jks')
+            storePassword 'Hq68jWGJZm'
+        }
+    }
+    buildTypes {
+        release {
+            debuggable false
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+flutter {
+    source '../..'
+}
