@@ -1,11 +1,9 @@
-package rs.raf.sk.service.service;
+package rs.raf.sk.fetcher.service;
 
-import rs.raf.sk.service.domain.dto.ChannelDto;
-
+import rs.raf.sk.fetcher.domain.dto.ChannelDto;
 import java.util.List;
 
 public interface ChannelService {
 
     List<ChannelDto> fetchAll();
-
 }

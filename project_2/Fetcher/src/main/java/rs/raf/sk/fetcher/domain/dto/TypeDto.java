@@ -1,4 +1,4 @@
-package rs.raf.sk.service.domain.dto;
+package rs.raf.sk.fetcher.domain.dto;
 
 import lombok.Data;
 
@@ -6,7 +6,5 @@ import lombok.Data;
 public class TypeDto {
 
     private Long id;
-
     private String name;
-
 }

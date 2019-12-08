@@ -5,6 +5,7 @@
 credentials.json
 .gradle/
 .idea/
+target/
 build/
 out/
 */build/

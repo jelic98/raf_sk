@@ -1,18 +1,17 @@
-package rs.raf.sk.service.ctrl;
+package rs.raf.sk.fetcher.ctrl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import rs.raf.sk.service.domain.dto.ChannelDto;
-import rs.raf.sk.service.service.ChannelService;
-
+import rs.raf.sk.fetcher.domain.dto.ChannelDto;
+import rs.raf.sk.fetcher.service.ChannelService;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class SimpleCtrl {
 
-    private final ChannelService channelService;
+    private ChannelService channelService;
 
     @GetMapping("/hello")
     public String hello(String name) {
@@ -20,6 +19,7 @@ public class SimpleCtrl {
     }
 
     @GetMapping("/fetchChannels")
-    public List<ChannelDto> fetchChannels() { return channelService.fetchAll(); }
-
+    public List<ChannelDto> fetchChannels() {
+        return channelService.fetchAll();
+    }
 }
