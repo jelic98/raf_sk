@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import rs.raf.sk.fetcher.ctrl.FetcherCtrl;
 import rs.raf.sk.fetcher.domain.Weather;
 import rs.raf.sk.fetcher.domain.dao.WeatherDao;
-import rs.raf.sk.fetcher.domain.dto.WeatherDto;
 
 @Component
 public class FetcherTask {
@@ -19,13 +18,14 @@ public class FetcherTask {
 
     @Scheduled(fixedRate = 3600000)
     public void fetchAll() {
-        for(Weather current : weatherDao.findAll()) {
-            String city = current.getCity();
-            WeatherDto dto = fetcherCtrl.fetchByCity(city);
-            Weather updated = new Weather(dto);
-            updated.setId(current.getId());
-
-            weatherDao.save(updated);
+        for(Weather weather : weatherDao.findAll()) {
+            weatherDao.save(Weather.builder()
+                    .id(weather.getId())
+                    .city(weather.getCity())
+                    .temp(weather.getTemp())
+                    .pressure(weather.getPressure())
+                    .humidity(weather.getHumidity())
+                    .build());
         }
     }
 }

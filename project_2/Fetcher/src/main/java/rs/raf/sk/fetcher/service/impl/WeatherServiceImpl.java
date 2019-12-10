@@ -4,13 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.raf.sk.fetcher.domain.Weather;
 import rs.raf.sk.fetcher.domain.dao.WeatherDao;
-import rs.raf.sk.fetcher.domain.dto.CityDto;
 import rs.raf.sk.fetcher.domain.dto.MainDto;
 import rs.raf.sk.fetcher.domain.dto.WeatherDto;
 import rs.raf.sk.fetcher.service.WeatherService;
 import rs.raf.sk.fetcher.service.feign.WeatherClient;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class WeatherServiceImpl implements WeatherService {
@@ -25,35 +22,28 @@ public class WeatherServiceImpl implements WeatherService {
     public WeatherDto fetchByCity(String city) {
         Weather existing = weatherDao.findByCity(city);
 
-        WeatherDto dto;
+        WeatherDto weather;
 
         if(existing == null) {
-            dto = weatherClient.fetchByCity(city);
+            weather = weatherClient.fetchByCity(city);
 
             weatherDao.save(Weather.builder()
                     .city(city)
-                    .temp(dto.getMain().getTemp())
-                    .pressure(dto.getMain().getPressure())
-                    .humidity(dto.getMain().getHumidity())
+                    .temp(weather.getMain().getTemp())
+                    .pressure(weather.getMain().getPressure())
+                    .humidity(weather.getMain().getHumidity())
                     .build());
         }else {
-            dto = new WeatherDto(existing);
+            MainDto main = new MainDto();
+            main.setTemp(existing.getTemp());
+            main.setPressure(existing.getPressure());
+            main.setHumidity(existing.getHumidity());
+
+            weather = new WeatherDto();
+            weather.setName(existing.getCity());
+            weather.setMain(main);
         }
 
-        return dto;
-    }
-
-    @Override
-    public List<CityDto> fetchCities() {
-        List<CityDto> cities = new ArrayList<>();
-        List<Weather> existing = weatherDao.findAll();
-
-        for(Weather weather : existing) {
-            CityDto city = new CityDto();
-            city.setName(weather.getCity());
-            cities.add(city);
-        }
-
-        return cities;
+        return weather;
     }
 }

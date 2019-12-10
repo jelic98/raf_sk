@@ -8,6 +8,6 @@ import rs.raf.sk.fetcher.domain.dto.WeatherDto;
 @FeignClient(name = "weatherClient", url = "http://api.openweathermap.org/data/2.5")
 public interface WeatherClient {
 
-    @GetMapping("/weather?q={city}&APPID=18780441c93aa4e503aef8da60024f87")
+    @GetMapping("/weather?q={city}&units=metric&APPID=18780441c93aa4e503aef8da60024f87")
     WeatherDto fetchByCity(@PathVariable("city") String city);
 }
