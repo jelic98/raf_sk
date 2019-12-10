@@ -18,8 +18,8 @@ import rs.raf.sk.mailer.consumer.MailEventConsumer;
 public class MailerApplication {
 
     static final String topicExchangeName = "hello-exchange";
-
     static final String queueName = "hello";
+    static final String keyName = "hello";
 
     @Bean
     Queue queue() {
@@ -33,7 +33,7 @@ public class MailerApplication {
 
     @Bean
     Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("hello");
+        return BindingBuilder.bind(queue).to(exchange).with(keyName);
     }
 
     @Bean

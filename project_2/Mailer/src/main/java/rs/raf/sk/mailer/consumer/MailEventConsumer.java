@@ -1,10 +1,12 @@
 package rs.raf.sk.mailer.consumer;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
-import rs.raf.sk.mailer.dto.MailDto;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 @Component
@@ -15,17 +17,23 @@ public class MailEventConsumer {
 
     private CountDownLatch latch = new CountDownLatch(1);
 
-    void sendEmail(MailDto mail) {
+    void sendEmail(String recipient, String subject, String message) {
         SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(mail.getRecipient());
-
-        msg.setSubject(mail.getSubject());
-        msg.setText(mail.getMessage());
+        msg.setTo(recipient);
+        msg.setSubject(subject);
+        msg.setText(message);
 
         mailSender.send(msg);
     }
 
-    public void receiveMessage(String message) {
+    public void receiveMessage(byte[] bytes) throws IOException {
+        JsonNode payload = new ObjectMapper().readTree(new String(bytes));
+        String recipient = payload.get("recipient").textValue();
+        String subject = payload.get("subject").textValue();
+        String message = payload.get("message").textValue();
+
+        sendEmail(recipient, subject, message);
+
         System.out.println("Received <" + message + ">");
         latch.countDown();
     }
