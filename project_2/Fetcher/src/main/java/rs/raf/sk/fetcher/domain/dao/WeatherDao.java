@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface WeatherDao extends JpaRepository<Weather, Long> {
 
-    List<Weather> findByCity(String city);
+    Weather findByCity(String city);
 }

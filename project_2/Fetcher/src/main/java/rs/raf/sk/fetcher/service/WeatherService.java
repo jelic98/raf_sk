@@ -8,6 +8,5 @@ import java.util.List;
 public interface WeatherService {
 
     WeatherDto fetchByCity(String city);
-    void addCity(String city);
     List<CityDto> fetchCities();
 }

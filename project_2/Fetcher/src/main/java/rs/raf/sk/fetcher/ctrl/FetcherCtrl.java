@@ -23,12 +23,6 @@ public class FetcherCtrl {
         return weatherService.fetchByCity(city);
     }
 
-    @PostMapping("/addCity")
-    @ResponseStatus(value = HttpStatus.OK, reason = "City has been successfully added")
-    public void addCity(String city) {
-        weatherService.addCity(city);
-    }
-
     @GetMapping("/fetchCities")
     public List<CityDto> fetchCities() {
         return weatherService.fetchCities();
