@@ -29,15 +29,15 @@ public class AuthServiceImpl implements AuthService {
     private final CityDao cityDao;
 
     @Override
-    /*public UserResDto login(LoginDto loginDto) {
+    public UserResDto login(LoginDto loginDto) {
         Optional<User> optUser = userDao.findByUsernameAndPassword(loginDto.getUsername(), loginDto.getPassword());
         if(!optUser.isPresent()) {
             return null;
         }
         return new UserResDto(optUser.get());
-    }*/
+    }
 
-     public UserResDto login(@Validated @RequestBody LoginDto loginDto) {
+     /*public UserResDto login(@Validated @RequestBody LoginDto loginDto) {
         Optional<User> optUser = userDao.findByUsernameAndPassword(loginDto.getUsername(), loginDto.getPassword());
         if(!optUser.isPresent()) {
             return null;
@@ -52,5 +52,5 @@ public class AuthServiceImpl implements AuthService {
         }
         System.out.println(optUser.get().getCities() != null);
         return new UserResDto(optUser.get());
-     }
+     }*/
 }

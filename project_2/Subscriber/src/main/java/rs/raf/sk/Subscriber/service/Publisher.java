@@ -1,6 +1,7 @@
 package rs.raf.sk.Subscriber.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.messaging.support.MessageBuilder;
@@ -10,13 +11,15 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 import rs.raf.sk.Subscriber.domain.dto.MessageDto;
 
+import javax.validation.constraints.NotNull;
+
 @Component
 @EnableBinding(OutputChannel.class)
 @RequiredArgsConstructor
 public class Publisher {
 
     @Autowired
-    private AmqpTemplate amqpTemplate;
+    private RabbitTemplate rabbitTemplate;
 
     private final OutputChannel outputChannel;
 
@@ -39,9 +42,10 @@ public class Publisher {
         return BindingBuilder.bind(queue).to(exchange).with(KEY_NAME);
     }
 
-    public void produceMsg(MessageDto msg){
-        Message<String> m = MessageBuilder.withPayload(binding(queue(), exchange()).toString() + msg).build();
-        outputChannel.output().send(m);
-        System.out.println("Send msg = " + msg);
+    public void produceMsg(String r, String s, String msg){
+
+        String str = "{ \"recipient\": \"" + r + "\", \"subject\": \"" + s + "\", \"message\": \"" + msg + "\" }";
+        System.out.println(str);
+        rabbitTemplate.convertAndSend(EXCHANGE_NAME, KEY_NAME, str.getBytes());
     }
 }
